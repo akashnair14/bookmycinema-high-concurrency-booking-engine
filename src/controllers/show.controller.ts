@@ -258,22 +258,19 @@ export class ShowController {
       const [rows] = await pool.query<RowDataPacket[]>(query, [showId]);
 
       if (rows.length === 0) {
-        // If show inventory isn't in show_seats yet, fetch screen layout and mark available
-        const fallbackQuery = `
-          SELECT 
-            st.id AS seat_id,
-            st.row_label,
-            st.seat_number,
-            st.seat_tier,
-            350.00 AS price,
-            'AVAILABLE' AS effective_status
-          FROM shows s
-          JOIN seats st ON s.screen_id = st.screen_id
-          WHERE s.id = ?
-          ORDER BY st.row_label DESC, st.seat_number ASC;
-        `;
-        const [fallbackRows] = await pool.query<RowDataPacket[]>(fallbackQuery, [showId]);
-        return res.json({ showId, totalSeats: fallbackRows.length, seats: fallbackRows });
+        // Initialize show inventory into show_seats from screen's seats layout
+        await pool.query(
+          `INSERT IGNORE INTO show_seats (show_id, seat_id, booking_id, status, price, version)
+           SELECT ?, s.id, NULL, 'AVAILABLE', COALESCE(tp.price, 350.00), 0
+           FROM shows sh
+           JOIN seats s ON sh.screen_id = s.screen_id
+           LEFT JOIN show_tier_pricing tp ON tp.show_id = sh.id AND tp.seat_tier = s.seat_tier
+           WHERE sh.id = ?`,
+          [showId, showId]
+        );
+
+        const [newRows] = await pool.query<RowDataPacket[]>(query, [showId]);
+        return res.json({ showId, totalSeats: newRows.length, seats: newRows });
       }
 
       return res.json({ showId, totalSeats: rows.length, seats: rows });

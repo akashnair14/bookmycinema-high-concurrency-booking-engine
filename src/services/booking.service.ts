@@ -26,6 +26,24 @@ export class BookingService {
     try {
       await connection.beginTransaction();
 
+      // If show inventory isn't initialized yet in show_seats for this show, initialize it from screens and seats
+      const [existingShowSeats] = await connection.query<RowDataPacket[]>(
+        `SELECT COUNT(*) as cnt FROM show_seats WHERE show_id = ?`,
+        [showId]
+      );
+
+      if (existingShowSeats[0]?.cnt === 0) {
+        await connection.query(
+          `INSERT INTO show_seats (show_id, seat_id, booking_id, status, price, version)
+           SELECT ?, s.id, NULL, 'AVAILABLE', COALESCE(tp.price, 350.00), 0
+           FROM shows sh
+           JOIN seats s ON sh.screen_id = s.screen_id
+           LEFT JOIN show_tier_pricing tp ON tp.show_id = sh.id AND tp.seat_tier = s.seat_tier
+           WHERE sh.id = ?`,
+          [showId, showId]
+        );
+      }
+
       // Ensure seats are actually available in MySQL (or previous hold expired)
       const sortedSeatIds = [...seatIds].sort((a, b) => a - b);
       const [rows] = await connection.query<RowDataPacket[]>(

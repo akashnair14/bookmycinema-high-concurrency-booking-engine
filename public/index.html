@@ -3,189 +3,1214 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Movie Tickets, Plays, Sports, Events & Cinemas - BookMyShow</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <title>BookMyCinema — Showtimes & Seat Booking</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <style>
-    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: #f2f2f2; }
-    .no-scrollbar::-webkit-scrollbar { display: none; }
-    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-    .screen-line {
-      border-top: 3px solid #1ea5fc;
-      border-radius: 50% 50% 0 0 / 14px 14px 0 0;
-      box-shadow: 0 -6px 12px -2px rgba(30, 165, 252, 0.25);
+    :root {
+      --bg-page: #f6f7f9;
+      --bg-card: #ffffff;
+      --border-subtle: #e3e6eb;
+      --border-strong: #cbd2dc;
+      --header-bg: #141821;
+      --header-sub: #1b212d;
+      --text-primary: #121721;
+      --text-secondary: #525c6e;
+      --text-muted: #7c8799;
+      --accent-red: #c0263b;
+      --accent-red-hover: #a11d30;
+      --accent-red-subtle: #fdf2f4;
+      --accent-red-border: #f5c2cb;
+      --status-avail: #18864b;
+      --status-avail-bg: #eafaf1;
+      --status-avail-border: #b8e9cc;
+      --status-fast: #c0263b;
+      --status-held: #d97706;
+      --status-sold: #94a3b8;
+      --radius-sm: 6px;
+      --radius-md: 8px;
+      --radius-lg: 10px;
+      --shadow-sm: 0 1px 2px 0 rgba(16, 24, 40, 0.05);
+      --shadow-md: 0 4px 6px -1px rgba(16, 24, 40, 0.08), 0 2px 4px -2px rgba(16, 24, 40, 0.04);
+      --shadow-lg: 0 12px 24px -4px rgba(16, 24, 40, 0.12), 0 4px 8px -2px rgba(16, 24, 40, 0.04);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--bg-page);
+      color: var(--text-primary);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      -webkit-font-smoothing: antialiased;
+      line-height: 1.45;
+    }
+
+    .mono {
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .container {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 0 20px;
+      width: 100%;
+    }
+
+    /* Header */
+    header {
+      background: var(--header-bg);
+      color: #ffffff;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+      gap: 24px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: #ffffff;
+    }
+
+    .brand-mark {
+      width: 28px;
+      height: 28px;
+      background: var(--accent-red);
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+
+    .brand-name {
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      color: #f8fafc;
+    }
+
+    .brand-name span {
+      color: #f87171;
+    }
+
+    .search-wrapper {
+      position: relative;
+      flex: 1;
+      max-width: 440px;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #64748b;
+      font-size: 13px;
+    }
+
+    .search-input {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.07);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: var(--radius-sm);
+      padding: 8px 12px 8px 36px;
+      color: #f1f5f9;
+      font-size: 13px;
+      outline: none;
+      transition: all 0.15s ease;
+      font-family: inherit;
+    }
+
+    .search-input::placeholder {
+      color: #64748b;
+    }
+
+    .search-input:focus {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: rgba(255, 255, 255, 0.3);
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      font-size: 13px;
+    }
+
+    .location-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: transparent;
+      border: none;
+      color: #cbd5e1;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 500;
+      padding: 6px 8px;
+      border-radius: var(--radius-sm);
+      transition: background 0.15s;
+    }
+
+    .location-btn:hover {
+      background: rgba(255, 255, 255, 0.06);
+      color: #ffffff;
+    }
+
+    .sign-in-btn {
+      background: var(--accent-red);
+      color: #ffffff;
+      border: 1px solid var(--accent-red);
+      font-weight: 600;
+      font-size: 13px;
+      padding: 7px 16px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: background 0.15s;
+      font-family: inherit;
+    }
+
+    .sign-in-btn:hover {
+      background: var(--accent-red-hover);
+    }
+
+    /* Cinema Header Banner */
+    .cinema-banner {
+      background: var(--bg-card);
+      border-bottom: 1px solid var(--border-subtle);
+      padding: 22px 0 18px;
+    }
+
+    .cinema-meta-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .cinema-title-box {
+      flex: 1;
+      min-width: 280px;
+    }
+
+    .cinema-breadcrumbs {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .cinema-breadcrumbs a {
+      color: var(--text-muted);
+      text-decoration: none;
+    }
+
+    .cinema-breadcrumbs a:hover {
+      color: var(--text-primary);
+    }
+
+    .cinema-name {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text-primary);
+      letter-spacing: -0.2px;
+    }
+
+    .cinema-amenities {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-top: 6px;
+      flex-wrap: wrap;
+    }
+
+    .cinema-amenity-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .cinema-amenity-dot {
+      color: var(--border-strong);
+      font-size: 10px;
+    }
+
+    /* Legend Box */
+    .status-legend-bar {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      background: var(--bg-page);
+      border: 1px solid var(--border-subtle);
+      padding: 8px 14px;
+      border-radius: var(--radius-md);
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-secondary);
+    }
+
+    .legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .dot.avail { background: var(--status-avail); }
+    .dot.fast { background: var(--status-fast); }
+    .dot.sold { background: var(--status-sold); }
+
+    /* Date Bar */
+    .date-nav-section {
+      background: var(--bg-card);
+      border-bottom: 1px solid var(--border-subtle);
+      position: sticky;
+      top: 64px;
+      z-index: 40;
+    }
+
+    .date-nav-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 0;
+      overflow-x: auto;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+
+    .date-nav-wrapper::-webkit-scrollbar {
+      display: none;
+    }
+
+    .date-pill {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-width: 68px;
+      height: 60px;
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      color: var(--text-secondary);
+      transition: all 0.12s ease;
+      font-family: inherit;
+      user-select: none;
+      padding: 4px 8px;
+    }
+
+    .date-pill:hover {
+      background: var(--bg-page);
+      border-color: var(--border-subtle);
+      color: var(--text-primary);
+    }
+
+    .date-pill.active {
+      background: var(--accent-red);
+      border-color: var(--accent-red);
+      color: #ffffff;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .date-pill-day {
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 2px;
+      opacity: 0.85;
+    }
+
+    .date-pill-num {
+      font-size: 17px;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    .date-pill-mon {
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      opacity: 0.85;
+      margin-top: 2px;
+    }
+
+    /* Filters Bar */
+    .controls-bar {
+      margin-top: 18px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .filter-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .filter-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      margin-right: 4px;
+    }
+
+    .filter-chip {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-secondary);
+      font-size: 12px;
+      font-weight: 500;
+      padding: 5px 11px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all 0.12s ease;
+      font-family: inherit;
+    }
+
+    .filter-chip:hover {
+      border-color: var(--border-strong);
+      color: var(--text-primary);
+    }
+
+    .filter-chip.active {
+      background: var(--text-primary);
+      border-color: var(--text-primary);
+      color: #ffffff;
+      font-weight: 600;
+    }
+
+    .shows-count-meta {
+      font-size: 13px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    /* Main Content */
+    main {
+      flex: 1;
+      padding-bottom: 48px;
+    }
+
+    /* Movie Rows */
+    .movie-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .movie-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-sm);
+      padding: 20px 24px;
+      display: grid;
+      grid-template-columns: 290px 1fr;
+      gap: 28px;
+      align-items: start;
+      transition: border-color 0.15s ease;
+    }
+
+    .movie-card:hover {
+      border-color: var(--border-strong);
+    }
+
+    .movie-info {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .movie-title-row {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+
+    .movie-title {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1.3;
+    }
+
+    .cert-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-secondary);
+      background: var(--bg-page);
+      border: 1px solid var(--border-strong);
+      border-radius: 4px;
+      padding: 1px 5px;
+      height: 18px;
+      flex-shrink: 0;
+      font-family: inherit;
+    }
+
+    .movie-language {
+      font-size: 13px;
+      color: var(--text-secondary);
+      font-weight: 500;
+      margin-bottom: 4px;
+    }
+
+    .movie-genres-meta {
+      font-size: 12px;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    /* Showtime Buttons Grid */
+    .showtimes-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .showtime-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: #ffffff;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      padding: 8px 14px;
+      min-width: 104px;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.15s ease;
+      font-family: inherit;
+      position: relative;
+    }
+
+    .showtime-btn:hover {
+      border-color: var(--text-primary);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .showtime-time {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-primary);
+      letter-spacing: -0.2px;
+    }
+
+    .showtime-meta {
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      margin-top: 3px;
+    }
+
+    .showtime-status-indicator {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+      margin-top: 2px;
+      text-transform: uppercase;
+    }
+
+    .showtime-btn.status-available .showtime-status-indicator {
+      color: var(--status-avail);
+    }
+
+    .showtime-btn.status-fast .showtime-status-indicator {
+      color: var(--status-fast);
+    }
+
+    .showtime-btn:hover .showtime-time {
+      color: var(--accent-red);
+    }
+
+    /* Empty state */
+    .empty-state {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 48px 24px;
+      text-align: center;
+      color: var(--text-muted);
+    }
+
+    .empty-state i {
+      font-size: 32px;
+      margin-bottom: 12px;
+      color: var(--border-strong);
+    }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.65);
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .modal-overlay.hidden {
+      display: none;
+    }
+
+    .modal-window {
+      background: #ffffff;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+      width: 100%;
+      max-width: 580px;
+      display: flex;
+      flex-direction: column;
+      max-height: 90vh;
+      overflow: hidden;
+      border: 1px solid var(--border-subtle);
+    }
+
+    .modal-header {
+      background: var(--header-bg);
+      color: #ffffff;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .modal-header h3 {
+      font-size: 16px;
+      font-weight: 700;
+      color: #ffffff;
+    }
+
+    .modal-header p {
+      font-size: 12px;
+      color: #94a3b8;
+      margin-top: 2px;
+    }
+
+    .modal-close-btn {
+      background: transparent;
+      border: none;
+      color: #94a3b8;
+      cursor: pointer;
+      font-size: 16px;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--radius-sm);
+      transition: all 0.12s;
+    }
+
+    .modal-close-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: #ffffff;
+    }
+
+    .modal-body {
+      padding: 24px 20px;
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    /* Screen display line */
+    .screen-indicator {
+      width: 80%;
+      margin: 0 auto 24px;
+      text-align: center;
+    }
+
+    .screen-curve {
+      height: 6px;
+      border-top: 2px solid #3b82f6;
+      border-radius: 50% 50% 0 0 / 8px 8px 0 0;
+      margin-bottom: 6px;
+    }
+
+    .screen-caption {
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+    }
+
+    /* Seat Grid Layout */
+    .seat-grid-container {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-width: 340px;
+      margin: 0 auto;
+    }
+
+    .seat-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .row-letter {
+      width: 18px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-align: center;
+    }
+
+    .row-seats {
+      display: flex;
+      gap: 8px;
+      flex: 1;
+      justify-content: center;
+    }
+
+    .seat-cell {
+      width: 30px;
+      height: 30px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.12s ease;
+      font-family: inherit;
+    }
+
+    .seat-cell.available {
+      border: 1px solid var(--status-avail-border);
+      background: #ffffff;
+      color: var(--status-avail);
+    }
+
+    .seat-cell.available:hover {
+      background: var(--status-avail-bg);
+      border-color: var(--status-avail);
+    }
+
+    .seat-cell.selected {
+      background: var(--status-avail);
+      color: #ffffff;
+      border: 1px solid var(--status-avail);
+    }
+
+    .seat-cell.held {
+      background: var(--status-held);
+      color: #ffffff;
+      border: 1px solid var(--status-held);
+      cursor: not-allowed;
+      opacity: 0.8;
+    }
+
+    .seat-cell.sold {
+      background: #e2e8f0;
+      color: #94a3b8;
+      border: 1px solid #cbd5e1;
+      cursor: not-allowed;
+    }
+
+    .seat-legend {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      margin-top: 24px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border-subtle);
+      font-size: 11px;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+
+    .seat-legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .seat-sample {
+      width: 14px;
+      height: 14px;
+      border-radius: 3px;
+    }
+
+    /* Modal Footer */
+    .modal-footer {
+      background: #f8fafc;
+      border-top: 1px solid var(--border-subtle);
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .booking-summary-info {
+      font-size: 13px;
+    }
+
+    .summary-seats-label {
+      color: var(--text-muted);
+      font-size: 12px;
+    }
+
+    .summary-seats-val {
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .summary-price-val {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-top: 2px;
+    }
+
+    .hold-action-btn {
+      background: var(--accent-red);
+      color: #ffffff;
+      border: 1px solid var(--accent-red);
+      font-weight: 600;
+      font-size: 13px;
+      padding: 9px 20px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: background 0.15s;
+      font-family: inherit;
+    }
+
+    .hold-action-btn:hover:not(:disabled) {
+      background: var(--accent-red-hover);
+    }
+
+    .hold-action-btn:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    /* Active Hold Floating Notification */
+    .hold-tray {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--header-bg);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-lg);
+      padding: 14px 18px;
+      z-index: 90;
+      max-width: 360px;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .hold-tray.hidden {
+      display: none;
+    }
+
+    .hold-tray-info {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .hold-tray-ref {
+      font-size: 11px;
+      color: #94a3b8;
+    }
+
+    .hold-tray-ref span {
+      color: #fbbf24;
+      font-weight: 600;
+    }
+
+    .hold-tray-timer {
+      font-size: 13px;
+      font-weight: 700;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .hold-tray-timer span {
+      color: #f87171;
+    }
+
+    .hold-tray-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .tray-pay-btn {
+      background: var(--status-avail);
+      color: #ffffff;
+      border: none;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 6px 12px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: opacity 0.15s;
+      font-family: inherit;
+    }
+
+    .tray-pay-btn:hover {
+      opacity: 0.9;
+    }
+
+    .tray-release-btn {
+      background: rgba(255, 255, 255, 0.1);
+      color: #cbd5e1;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      font-size: 12px;
+      font-weight: 500;
+      padding: 6px 10px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all 0.15s;
+      font-family: inherit;
+    }
+
+    .tray-release-btn:hover {
+      background: rgba(255, 255, 255, 0.18);
+      color: #ffffff;
+    }
+
+    /* Footer */
+    footer {
+      background: var(--header-bg);
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 24px 0;
+      color: #94a3b8;
+      font-size: 12px;
+      margin-top: auto;
+    }
+
+    .footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .footer-brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #f1f5f9;
+      font-weight: 600;
+    }
+
+    /* Responsive */
+    @media (max-width: 860px) {
+      .movie-card {
+        grid-template-columns: 1fr;
+        gap: 16px;
+        padding: 16px;
+      }
+
+      .search-wrapper {
+        display: none;
+      }
+
+      .cinema-meta-row {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .status-legend-bar {
+        width: 100%;
+        justify-content: space-between;
+      }
     }
   </style>
 </head>
-<body class="text-gray-900 min-h-screen flex flex-col">
+<body>
 
-  <!-- BOOKMYSHOW PRIMARY NAVBAR -->
-  <header class="bg-[#333545] text-white sticky top-0 z-50">
-    <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
-      <div class="flex items-center space-x-8 flex-1">
-        <a href="/" class="text-2xl font-black italic tracking-tighter text-white">
-          book<span class="text-[#c81e3d]">my</span>show
+  <!-- Top Application Header -->
+  <header>
+    <div class="container">
+      <div class="nav-inner">
+        <!-- Visual Identity: BookMyCinema -->
+        <a href="/" class="brand">
+          <div class="brand-mark">B</div>
+          <div class="brand-name">Book<span>My</span>Cinema</div>
         </a>
-        <div class="hidden md:flex items-center bg-white text-gray-700 rounded px-3 py-1.5 w-96 text-xs shadow-inner">
-          <i class="fa-solid fa-magnifying-glass text-gray-400 mr-2"></i>
-          <input type="text" placeholder="Search for Movies, Events, Plays, Sports..." class="w-full outline-none bg-transparent placeholder-gray-400">
+
+        <!-- Search Bar -->
+        <div class="search-wrapper">
+          <i class="fa-solid fa-magnifying-glass search-icon"></i>
+          <input type="text" id="movieSearchInput" placeholder="Search movies, languages, or formats..." class="search-input" oninput="applyFilters()">
+        </div>
+
+        <!-- Right Side Nav -->
+        <div class="nav-actions">
+          <button class="location-btn" title="Select city">
+            <i class="fa-solid fa-location-dot" style="font-size: 12px; color: #94a3b8;"></i>
+            <span>Bengaluru</span>
+            <i class="fa-solid fa-chevron-down" style="font-size: 9px; opacity: 0.7;"></i>
+          </button>
+          <button class="sign-in-btn">Sign In</button>
         </div>
       </div>
-      <div class="flex items-center space-x-6 text-xs">
-        <div class="flex items-center space-x-1 cursor-pointer hover:text-gray-200">
-          <span class="font-medium">Bengaluru</span>
-          <i class="fa-solid fa-chevron-down text-[9px] text-gray-400"></i>
-        </div>
-        <button class="bg-[#c81e3d] hover:bg-[#a8132f] text-white px-4 py-1.5 rounded text-xs font-semibold transition shadow-sm">
-          Sign In
-        </button>
-      </div>
-    </div>
-
-    <!-- SUB-NAVBAR -->
-    <div class="bg-[#1f2533] text-gray-300 text-[12px] border-t border-gray-700/50">
-
     </div>
   </header>
 
-  <!-- THEATRE BANNER -->
-  <section class="bg-white border-b border-gray-200 py-4">
-    <div class="max-w-6xl mx-auto px-4">
-      <div class="flex flex-col md:flex-row md:items-center justify-between gap-3">
-        <div>
-          <h1 id="theatreName" class="text-xl font-bold text-gray-900">PVR INOX: Forum Mall, Koramangala</h1>
-          <p class="text-xs text-gray-500 mt-1">
-            Hosur Road, Koramangala, Bengaluru &nbsp;|&nbsp; Food & Beverage &nbsp;|&nbsp; M-Ticket Available
-          </p>
+  <!-- Cinema Details Section -->
+  <section class="cinema-banner">
+    <div class="container">
+      <div class="cinema-meta-row">
+        <div class="cinema-title-box">
+          <div class="cinema-breadcrumbs">
+            <a href="#">Cinemas</a>
+            <span>/</span>
+            <span>Bengaluru</span>
+            <span>/</span>
+            <span style="color: var(--text-primary); font-weight: 500;">Forum Mall</span>
+          </div>
+          <h1 id="theatreName" class="cinema-name">PVR INOX: Forum Mall, Koramangala</h1>
+          <div class="cinema-amenities">
+            <span class="cinema-amenity-item"><i class="fa-solid fa-location-arrow"></i> Hosur Road, Koramangala</span>
+            <span class="cinema-amenity-dot">•</span>
+            <span class="cinema-amenity-item"><i class="fa-solid fa-utensils"></i> Food & Beverage</span>
+            <span class="cinema-amenity-dot">•</span>
+            <span class="cinema-amenity-item"><i class="fa-solid fa-ticket"></i> M-Ticket & Box Office</span>
+          </div>
         </div>
-        <div class="flex items-center space-x-4 text-[11px] text-gray-500 font-medium">
-          <span class="flex items-center"><span class="w-2.5 h-2.5 rounded-full bg-[#4abd5d] mr-1.5"></span>AVAILABLE</span>
-          <span class="flex items-center"><span class="w-2.5 h-2.5 rounded-full bg-[#c81e3d] mr-1.5"></span>FAST FILLING</span>
+
+        <!-- Status Legend -->
+        <div class="status-legend-bar">
+          <div class="legend-item">
+            <span class="dot avail"></span>
+            <span>Available</span>
+          </div>
+          <div class="legend-item">
+            <span class="dot fast"></span>
+            <span>Fast Filling</span>
+          </div>
+          <div class="legend-item">
+            <span class="dot sold"></span>
+            <span>Sold Out</span>
+          </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- 7-DAY DATE SLIDER (BOOKMYSHOW RED ACCENT) -->
-  <section class="bg-white border-b border-gray-200 sticky top-20 z-30 shadow-xs">
-    <div class="max-w-6xl mx-auto px-4">
-      <div id="dateStrip" class="flex items-center space-x-2 py-2.5 overflow-x-auto no-scrollbar">
-        <!-- Injected via JavaScript -->
+  <!-- Clean Horizontal Date Navigation -->
+  <section class="date-nav-section">
+    <div class="container">
+      <div id="dateStrip" class="date-nav-wrapper">
+        <!-- Dynamically injected date pills -->
       </div>
     </div>
   </section>
 
-  <!-- MOVIE LISTINGS (MATCHING REFERENCE SCREENSHOT) -->
-  <main class="max-w-6xl mx-auto px-4 py-6 flex-1 w-full">
-    <div id="movieList" class="space-y-3">
-      <div class="text-center py-16 text-gray-400 text-sm">Loading shows...</div>
+  <!-- Main Showtimes Content -->
+  <main>
+    <div class="container">
+      <!-- Filtering Controls -->
+      <div class="controls-bar">
+        <div class="filter-group">
+          <span class="filter-label">Language:</span>
+          <button class="filter-chip active" data-filter="lang" data-val="ALL" onclick="setFilter('lang', 'ALL', this)">All</button>
+          <button class="filter-chip" data-filter="lang" data-val="English" onclick="setFilter('lang', 'English', this)">English</button>
+          <button class="filter-chip" data-filter="lang" data-val="Hindi" onclick="setFilter('lang', 'Hindi', this)">Hindi</button>
+          <button class="filter-chip" data-filter="lang" data-val="Telugu" onclick="setFilter('lang', 'Telugu', this)">Telugu</button>
+          <button class="filter-chip" data-filter="lang" data-val="Kannada" onclick="setFilter('lang', 'Kannada', this)">Kannada</button>
+        </div>
+
+        <div class="filter-group">
+          <span class="filter-label">Format:</span>
+          <button class="filter-chip active" data-filter="format" data-val="ALL" onclick="setFilter('format', 'ALL', this)">All Formats</button>
+          <button class="filter-chip" data-filter="format" data-val="IMAX" onclick="setFilter('format', 'IMAX', this)">IMAX 3D</button>
+          <button class="filter-chip" data-filter="format" data-val="4DX" onclick="setFilter('format', '4DX', this)">4DX</button>
+          <button class="filter-chip" data-filter="format" data-val="2D" onclick="setFilter('format', '2D', this)">2D</button>
+        </div>
+
+        <div id="showsCount" class="shows-count-meta">Showing all shows</div>
+      </div>
+
+      <!-- Movie Rows -->
+      <div id="movieList" class="movie-list">
+        <div class="empty-state">
+          <i class="fa-solid fa-circle-notch fa-spin"></i>
+          <p>Loading showtimes...</p>
+        </div>
+      </div>
     </div>
   </main>
 
-  <!-- SEAT BOOKING MODAL -->
-  <div id="seatModal" class="fixed inset-0 bg-black/70 backdrop-blur-xs z-50 flex items-center justify-center p-4 hidden">
-    <div class="bg-white rounded-lg shadow-2xl max-w-xl w-full overflow-hidden flex flex-col max-h-[90vh]">
-      <!-- Header -->
-      <div class="bg-[#333545] text-white px-5 py-3.5 flex items-center justify-between">
+  <!-- Seat Selection Modal -->
+  <div id="seatModal" class="modal-overlay hidden">
+    <div class="modal-window">
+      <!-- Modal Header -->
+      <div class="modal-header">
         <div>
-          <h3 id="modalMovieTitle" class="font-bold text-base">Movie Title</h3>
-          <p id="modalShowDetails" class="text-xs text-gray-300 mt-0.5">Audi 1 • 09:30 AM</p>
+          <h3 id="modalMovieTitle">Movie Title</h3>
+          <p id="modalShowDetails">Audi 1 • 09:30 AM</p>
         </div>
-        <button onclick="closeModal()" class="text-gray-400 hover:text-white text-lg">
+        <button class="modal-close-btn" onclick="closeModal()" aria-label="Close dialog">
           <i class="fa-solid fa-xmark"></i>
         </button>
       </div>
 
-      <!-- Seating Body -->
-      <div class="p-6 overflow-y-auto flex-1 bg-white">
-        <!-- Screen Line -->
-        <div class="text-center mb-6">
-          <div class="screen-line w-3/4 mx-auto pt-2 text-[10px] text-gray-400 tracking-widest font-semibold uppercase">
-            All eyes this way please
-          </div>
+      <!-- Modal Body -->
+      <div class="modal-body">
+        <div class="screen-indicator">
+          <div class="screen-curve"></div>
+          <div class="screen-caption">Screen this way</div>
         </div>
 
-        <div id="seatGrid" class="space-y-3 max-w-sm mx-auto">
-          <!-- Dynamically populated seats -->
+        <div id="seatGrid" class="seat-grid-container">
+          <!-- Dynamically populated seating matrix -->
         </div>
 
-        <!-- Legend -->
-        <div class="flex items-center justify-center space-x-5 mt-6 pt-4 border-t border-gray-100 text-xs text-gray-500 font-medium">
-          <div class="flex items-center space-x-1.5">
-            <div class="w-3.5 h-3.5 border border-[#4abd5d] rounded bg-white"></div>
+        <!-- Seating Legend -->
+        <div class="seat-legend">
+          <div class="seat-legend-item">
+            <div class="seat-sample" style="border: 1px solid var(--status-avail-border); background: #ffffff;"></div>
             <span>Available</span>
           </div>
-          <div class="flex items-center space-x-1.5">
-            <div class="w-3.5 h-3.5 bg-[#4abd5d] rounded"></div>
+          <div class="seat-legend-item">
+            <div class="seat-sample" style="background: var(--status-avail);"></div>
             <span>Selected</span>
           </div>
-          <div class="flex items-center space-x-1.5">
-            <div class="w-3.5 h-3.5 bg-orange-400 rounded"></div>
+          <div class="seat-legend-item">
+            <div class="seat-sample" style="background: var(--status-held);"></div>
             <span>Held (10m)</span>
           </div>
-          <div class="flex items-center space-x-1.5">
-            <div class="w-3.5 h-3.5 bg-gray-300 rounded"></div>
+          <div class="seat-legend-item">
+            <div class="seat-sample" style="background: #e2e8f0; border: 1px solid #cbd5e1;"></div>
             <span>Sold</span>
           </div>
         </div>
       </div>
 
-      <!-- Footer Checkout -->
-      <div class="bg-gray-50 border-t border-gray-200 px-5 py-3.5 flex items-center justify-between">
-        <div>
-          <div class="text-xs text-gray-500">Seats: <span id="selectedSeatsText" class="font-bold text-gray-800">None</span></div>
-          <div class="text-sm font-bold text-gray-900">Total: ₹<span id="totalAmount">0</span></div>
+      <!-- Modal Footer -->
+      <div class="modal-footer">
+        <div class="booking-summary-info">
+          <div class="summary-seats-label">Seats: <span id="selectedSeatsText" class="summary-seats-val">None</span></div>
+          <div class="summary-price-val">₹<span id="totalAmount">0</span></div>
         </div>
-        <button id="holdBtn" onclick="holdSelectedSeats()" class="bg-[#c81e3d] hover:bg-[#a8132f] text-white px-5 py-2 rounded text-xs font-bold transition shadow-sm disabled:opacity-50 disabled:cursor-not-allowed">
+        <button id="holdBtn" onclick="holdSelectedSeats()" class="hold-action-btn" disabled>
           Hold Seats & Proceed
         </button>
       </div>
     </div>
   </div>
 
-  <!-- HOLD TIMER BAR -->
-  <div id="activeHoldBanner" class="fixed bottom-5 right-5 bg-[#333545] text-white px-5 py-3.5 rounded-lg shadow-xl border border-gray-700 z-50 hidden max-w-sm">
-    <div class="flex items-center space-x-4">
-      <div class="bg-[#c81e3d] text-white p-2 rounded text-base">
-        <i class="fa-solid fa-stopwatch"></i>
+  <!-- Active 10-Minute Hold Floating Tray -->
+  <div id="activeHoldBanner" class="hold-tray hidden">
+    <div class="hold-tray-info">
+      <div class="hold-tray-ref">Hold Ref: <span id="holdRef" class="mono">...</span></div>
+      <div class="hold-tray-timer">
+        <i class="fa-regular fa-clock" style="font-size: 12px; color: #f87171;"></i>
+        <span>Expires in:</span>
+        <span id="timerCountdown" class="mono">10:00</span>
       </div>
-      <div class="flex-1">
-        <div class="text-xs text-gray-300">Booking Ref: <span id="holdRef" class="font-mono text-yellow-400 font-bold">...</span></div>
-        <div class="text-xs font-semibold text-yellow-400 mt-0.5">Expires in: <span id="timerCountdown" class="font-mono font-bold text-sm">10:00</span></div>
-      </div>
-      <div class="flex items-center space-x-2">
-        <button onclick="simulatePayment()" class="bg-[#4abd5d] hover:bg-green-600 text-white text-xs font-bold px-3 py-1.5 rounded transition">
-          Pay
-        </button>
-        <button onclick="cancelHold()" class="bg-gray-700 hover:bg-gray-600 text-gray-300 text-xs px-2.5 py-1.5 rounded transition">
-          Release
-        </button>
-      </div>
+    </div>
+    <div class="hold-tray-actions">
+      <button onclick="simulatePayment()" class="tray-pay-btn">Pay Now</button>
+      <button onclick="cancelHold()" class="tray-release-btn">Release</button>
     </div>
   </div>
 
-  <!-- FOOTER -->
-  <footer class="bg-[#333545] text-gray-400 text-xs py-6 mt-auto border-t border-gray-700">
-    <div class="max-w-6xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-3">
-      <div class="text-white text-lg font-black italic tracking-tighter">
-        book<span class="text-[#c81e3d]">my</span>show
-      </div>
-      <div class="text-gray-400 text-center md:text-right">
-        Cinema Ticketing Engine • MySQL 8.4 & Redis Concurrency Architecture
+  <!-- Application Footer -->
+  <footer>
+    <div class="container">
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <div class="brand-mark" style="width: 22px; height: 22px; font-size: 11px;">B</div>
+          <span>BOOKMYCINEMA</span>
+        </div>
+        <div style="font-size: 12px; color: #64748b;">
+          High-Concurrency Ticketing Engine • Normalized MySQL 8.4 Architecture
+        </div>
       </div>
     </div>
   </footer>
 
-  <!-- SCRIPT -->
+  <!-- Application Logic & API Integration -->
   <script>
     const THEATRE_ID = 1;
     let selectedDate = '2026-10-01';
     let currentShowId = null;
-    let selectedSeats = new Set();
+    let selectedSeats = new Map();
     let currentHold = null;
     let countdownInterval = null;
 
-    // 1. Load Dates
+    let allMoviesData = [];
+    let currentLangFilter = 'ALL';
+    let currentFormatFilter = 'ALL';
+
+    // 1. Load Dates Strip
     async function loadDates() {
       try {
         const res = await fetch(`/api/v1/theatres/${THEATRE_ID}/dates`);
@@ -198,22 +1223,16 @@
           if (idx === 0) selectedDate = d.show_date;
 
           const dateBtn = document.createElement('button');
-          dateBtn.className = `flex flex-col items-center justify-center px-4 py-2 rounded transition min-w-[65px] ${
-            isSelected 
-              ? 'bg-[#c81e3d] text-white font-bold shadow-sm' 
-              : 'text-gray-700 hover:bg-gray-100 font-medium'
-          }`;
+          dateBtn.className = `date-pill ${isSelected ? 'active' : ''}`;
           dateBtn.innerHTML = `
-            <span class="text-[10px] uppercase font-bold tracking-tight ${isSelected ? 'text-white' : 'text-gray-500'}">${d.day_short}</span>
-            <span class="text-base font-extrabold leading-tight">${d.day_month.split(' ')[0]}</span>
-            <span class="text-[10px] uppercase font-bold ${isSelected ? 'text-white' : 'text-gray-500'}">${d.day_month.split(' ')[1]}</span>
+            <span class="date-pill-day">${d.day_short}</span>
+            <span class="date-pill-num">${d.day_month.split(' ')[0]}</span>
+            <span class="date-pill-mon">${d.day_month.split(' ')[1]}</span>
           `;
           dateBtn.onclick = () => {
             selectedDate = d.show_date;
-            document.querySelectorAll('#dateStrip button').forEach(b => {
-              b.className = 'flex flex-col items-center justify-center px-4 py-2 rounded transition min-w-[65px] text-gray-700 hover:bg-gray-100 font-medium';
-            });
-            dateBtn.className = 'flex flex-col items-center justify-center px-4 py-2 rounded transition min-w-[65px] bg-[#c81e3d] text-white font-bold shadow-sm';
+            document.querySelectorAll('#dateStrip .date-pill').forEach(b => b.classList.remove('active'));
+            dateBtn.classList.add('active');
             loadShows();
           };
           dateStrip.appendChild(dateBtn);
@@ -225,10 +1244,15 @@
       }
     }
 
-    // 2. Load Shows (P2 Query)
+    // 2. Load Shows from P2 API
     async function loadShows() {
       const container = document.getElementById('movieList');
-      container.innerHTML = '<div class="text-center py-12 text-gray-400 text-sm">Loading shows...</div>';
+      container.innerHTML = `
+        <div class="empty-state">
+          <i class="fa-solid fa-circle-notch fa-spin"></i>
+          <p>Loading showtimes...</p>
+        </div>
+      `;
 
       try {
         const res = await fetch(`/api/v1/theatres/${THEATRE_ID}/shows?date=${selectedDate}`);
@@ -238,43 +1262,124 @@
           document.getElementById('theatreName').innerText = data.theatreName;
         }
 
-        if (!data.movies || data.movies.length === 0) {
-          container.innerHTML = `<div class="bg-white rounded p-8 text-center text-gray-500">No shows scheduled for ${selectedDate}.</div>`;
-          return;
+        allMoviesData = data.movies || [];
+        applyFilters();
+      } catch (err) {
+        container.innerHTML = `
+          <div class="empty-state" style="color: #c0263b;">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+            <p>Failed to load showtimes: ${err.message}</p>
+          </div>
+        `;
+      }
+    }
+
+    // Filter Handlers
+    function setFilter(type, value, element) {
+      if (type === 'lang') {
+        currentLangFilter = value;
+      } else if (type === 'format') {
+        currentFormatFilter = value;
+      }
+
+      document.querySelectorAll(`button[data-filter="${type}"]`).forEach(btn => btn.classList.remove('active'));
+      element.classList.add('active');
+      applyFilters();
+    }
+
+    function applyFilters() {
+      const container = document.getElementById('movieList');
+      const searchVal = (document.getElementById('movieSearchInput')?.value || '').toLowerCase().trim();
+
+      const filtered = allMoviesData.filter(movie => {
+        // Language filter
+        if (currentLangFilter !== 'ALL' && !movie.language.toLowerCase().includes(currentLangFilter.toLowerCase())) {
+          return false;
         }
 
-        container.innerHTML = '';
-        data.movies.forEach(movie => {
-          const card = document.createElement('div');
-          card.className = 'bg-white rounded border border-gray-200 p-5';
+        // Format filter
+        if (currentFormatFilter !== 'ALL') {
+          const hasMatchingFormat = movie.shows.some(s => s.screenType.toLowerCase().includes(currentFormatFilter.toLowerCase()));
+          if (!hasMatchingFormat) return false;
+        }
 
-          // Showtime Buttons (Matching BookMyShow)
-          const showPills = movie.shows.map(s => `
-            <button onclick="openSeatModal(${s.showId}, '${movie.title}', '${s.screenNumber} • ${s.screenType}', '${s.showTime}')"
-              class="group min-w-[100px] border border-gray-300 hover:border-[#4abd5d] bg-white rounded py-2 px-3 text-center transition flex flex-col items-center justify-center">
-              <span class="text-xs font-bold text-gray-800 group-hover:text-[#4abd5d] tracking-tight">${s.showTime}</span>
-              <span class="text-[9px] font-semibold text-gray-400 group-hover:text-[#4abd5d] uppercase tracking-wider mt-0.5">${s.screenType}</span>
-            </button>
-          `).join('');
+        // Search text
+        if (searchVal) {
+          const matchesTitle = movie.title.toLowerCase().includes(searchVal);
+          const matchesLang = movie.language.toLowerCase().includes(searchVal);
+          const matchesGenre = (movie.genre || '').toLowerCase().includes(searchVal);
+          if (!matchesTitle && !matchesLang && !matchesGenre) return false;
+        }
 
-          // Exact Layout Matching Attached Screenshots
-          card.innerHTML = `
-            <div class="flex flex-col md:flex-row md:items-start justify-between gap-6">
-              <div class="space-y-0.5 md:w-72 flex-shrink-0">
-                <h3 class="font-bold text-base text-gray-900 leading-snug">${movie.title}</h3>
-                <div class="text-xs text-gray-600 font-normal">${movie.certification}</div>
-                <div class="text-xs text-gray-500 font-normal">${movie.language}</div>
-              </div>
-              <div class="flex flex-wrap gap-2.5 items-center flex-1">
-                ${showPills}
-              </div>
-            </div>
-          `;
-          container.appendChild(card);
-        });
-      } catch (err) {
-        container.innerHTML = `<div class="bg-red-50 text-red-600 rounded p-6 text-center text-xs">Failed to load shows: ${err.message}</div>`;
+        return true;
+      });
+
+      // Update count
+      const totalShows = filtered.reduce((acc, m) => acc + m.shows.length, 0);
+      document.getElementById('showsCount').innerText = `${filtered.length} movies • ${totalShows} shows scheduled`;
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <i class="fa-solid fa-film"></i>
+            <p>No shows found matching the selected filters for ${selectedDate}.</p>
+          </div>
+        `;
+        return;
       }
+
+      container.innerHTML = '';
+      filtered.forEach(movie => {
+        const card = document.createElement('div');
+        card.className = 'movie-card';
+
+        // Filter shows inside movie if format filter is active
+        const showsToDisplay = currentFormatFilter === 'ALL'
+          ? movie.shows
+          : movie.shows.filter(s => s.screenType.toLowerCase().includes(currentFormatFilter.toLowerCase()));
+
+        // Showtime buttons: Compact & elegant, time is dominant element
+        const showButtonsHtml = showsToDisplay.map((s, idx) => {
+          // Subtle availability indication based on showtime slot
+          const isFast = idx % 3 === 1;
+          const statusClass = isFast ? 'status-fast' : 'status-available';
+          const statusLabel = isFast ? 'Fast Filling' : 'Available';
+
+          return `
+            <button class="showtime-btn ${statusClass}"
+              onclick="openSeatModal(${s.showId}, '${escapeQuotes(movie.title)}', '${s.screenNumber} • ${s.screenType}', '${s.showTime}')"
+              title="${s.screenNumber} • ${s.soundSystem}">
+              <span class="showtime-time">${s.showTime}</span>
+              <span class="showtime-meta">${s.screenType}</span>
+              <span class="showtime-status-indicator">${statusLabel}</span>
+            </button>
+          `;
+        }).join('');
+
+        card.innerHTML = `
+          <div class="movie-info">
+            <div class="movie-title-row">
+              <h3 class="movie-title">${movie.title}</h3>
+              <span class="cert-badge">${movie.certification}</span>
+            </div>
+            <div class="movie-language">${movie.language}</div>
+            <div class="movie-genres-meta">
+              <span>${movie.genre || 'Action/Drama'}</span>
+              <span>•</span>
+              <span>${movie.duration}</span>
+            </div>
+          </div>
+          <div class="showtimes-grid">
+            ${showButtonsHtml}
+          </div>
+        `;
+
+        container.appendChild(card);
+      });
+    }
+
+    function escapeQuotes(str) {
+      return (str || '').replace(/'/g, "\\'");
     }
 
     // 3. Open Seat Modal
@@ -287,7 +1392,7 @@
       document.getElementById('modalShowDetails').innerText = `${screen} • ${time}`;
 
       const grid = document.getElementById('seatGrid');
-      grid.innerHTML = '<div class="text-center py-8 text-gray-400 text-xs">Loading seats...</div>';
+      grid.innerHTML = '<div style="text-align: center; padding: 24px; color: var(--text-muted); font-size: 13px;">Loading seats...</div>';
       document.getElementById('seatModal').classList.remove('hidden');
 
       try {
@@ -295,7 +1400,7 @@
         const data = await res.json();
         renderSeatGrid(data.seats || []);
       } catch (err) {
-        grid.innerHTML = `<div class="text-center py-4 text-red-500 text-xs">Failed to load seats: ${err.message}</div>`;
+        grid.innerHTML = `<div style="text-align: center; padding: 16px; color: var(--accent-red); font-size: 13px;">Failed to load seats: ${err.message}</div>`;
       }
     }
 
@@ -309,7 +1414,7 @@
       grid.innerHTML = '';
 
       if (!seatsList || seatsList.length === 0) {
-        grid.innerHTML = '<div class="text-center text-gray-400 py-4 text-xs">No seating layout configured for this screen.</div>';
+        grid.innerHTML = '<div style="text-align: center; padding: 16px; color: var(--text-muted); font-size: 13px;">No seating layout configured for this screen.</div>';
         return;
       }
 
@@ -323,18 +1428,17 @@
 
       sortedRowLabels.forEach(rowLabel => {
         const rowSeats = rowMap.get(rowLabel).sort((a, b) => a.seat_number - b.seat_number);
-        const price = rowSeats[0]?.price || 250;
 
         const rowDiv = document.createElement('div');
-        rowDiv.className = 'flex items-center space-x-2';
+        rowDiv.className = 'seat-row';
 
         const label = document.createElement('div');
-        label.className = 'w-5 text-xs font-bold text-gray-400 text-center';
+        label.className = 'row-letter';
         label.innerText = rowLabel;
         rowDiv.appendChild(label);
 
         const seatsDiv = document.createElement('div');
-        seatsDiv.className = 'flex-1 flex justify-center space-x-2';
+        seatsDiv.className = 'row-seats';
 
         rowSeats.forEach(s => {
           const seat = document.createElement('button');
@@ -342,24 +1446,31 @@
           const isHeld = s.effective_status === 'HELD';
 
           if (isSold) {
-            seat.className = 'w-7 h-7 rounded text-[11px] font-medium flex items-center justify-center bg-gray-300 text-gray-500 cursor-not-allowed';
+            seat.className = 'seat-cell sold';
             seat.disabled = true;
+            seat.title = `Seat ${rowLabel}${s.seat_number} (Sold)`;
           } else if (isHeld) {
-            seat.className = 'w-7 h-7 rounded text-[11px] font-medium flex items-center justify-center bg-orange-400 text-white cursor-not-allowed';
+            seat.className = 'seat-cell held';
             seat.disabled = true;
+            seat.title = `Seat ${rowLabel}${s.seat_number} (Currently Held)`;
           } else {
-            seat.className = 'w-7 h-7 rounded text-[11px] font-medium flex items-center justify-center transition border border-[#4abd5d] text-[#4abd5d] hover:bg-green-50';
+            seat.className = 'seat-cell available';
+            seat.title = `Seat ${rowLabel}${s.seat_number} - ₹${s.price || 350}`;
             seat.onclick = () => {
               if (selectedSeats.has(s.seat_id)) {
                 selectedSeats.delete(s.seat_id);
-                seat.className = 'w-7 h-7 rounded text-[11px] font-medium flex items-center justify-center transition border border-[#4abd5d] text-[#4abd5d] hover:bg-green-50';
+                seat.className = 'seat-cell available';
               } else {
                 if (selectedSeats.size >= 6) {
                   alert('Maximum 6 seats allowed per booking.');
                   return;
                 }
-                selectedSeats.add(s.seat_id);
-                seat.className = 'w-7 h-7 rounded text-[11px] font-medium flex items-center justify-center transition bg-[#4abd5d] text-white';
+                selectedSeats.set(s.seat_id, {
+                  seatId: s.seat_id,
+                  label: `${rowLabel}${s.seat_number}`,
+                  price: Number(s.price) || 350
+                });
+                seat.className = 'seat-cell selected';
               }
               updateSelectedSeatsUI();
             };
@@ -384,8 +1495,10 @@
         total.innerText = '0';
         btn.disabled = true;
       } else {
-        text.innerText = Array.from(selectedSeats).join(', ');
-        total.innerText = (selectedSeats.size * 350).toString();
+        const seatItems = Array.from(selectedSeats.values());
+        text.innerText = seatItems.map(item => item.label).join(', ');
+        const sum = seatItems.reduce((acc, item) => acc + item.price, 0);
+        total.innerText = sum.toLocaleString('en-IN');
         btn.disabled = false;
       }
     }
@@ -399,11 +1512,12 @@
       holdBtn.innerText = 'Holding...';
 
       try {
+        const seatIds = Array.from(selectedSeats.keys());
         const res = await fetch(`/api/v1/shows/${currentShowId}/hold-seats`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            seatIds: Array.from(selectedSeats),
+            seatIds: seatIds,
             userId: 1,
             ttlSeconds: 600
           })
@@ -514,6 +1628,7 @@
       }
     }
 
+    // Initialize
     loadDates();
   </script>
 </body>
