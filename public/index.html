@@ -1625,8 +1625,16 @@
         if (res.ok) {
           clearInterval(countdownInterval);
           document.getElementById('activeHoldBanner').classList.add('hidden');
+          currentHold = null;
+          selectedSeats.clear();
+          updateSelectedSeatsUI();
           alert('Payment Successful! Tickets confirmed.');
           loadShows();
+          if (currentShowId && !document.getElementById('seatModal').classList.contains('hidden')) {
+            const seatsRes = await fetch(`/api/v1/shows/${currentShowId}/seats`);
+            const seatsData = await seatsRes.json();
+            renderSeatGrid(seatsData.seats || []);
+          }
         } else {
           alert(`Payment Error: ${data.error}`);
         }
@@ -1643,6 +1651,7 @@
       if (countdownInterval) clearInterval(countdownInterval);
       document.getElementById('activeHoldBanner').classList.add('hidden');
       currentHold = null;
+      updateSelectedSeatsUI();
 
       try {
         const res = await fetch(`/api/v1/shows/${currentShowId || 1}/release-seats`, {
