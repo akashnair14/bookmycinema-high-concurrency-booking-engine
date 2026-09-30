@@ -321,8 +321,8 @@
       }
     }
 
-    // 3. Open Seat Modal
-    function openSeatModal(showId, title, screen, time) {
+    // 3. Open Seat Modal with live seat status from MySQL
+    async function openSeatModal(showId, title, screen, time) {
       currentShowId = showId;
       selectedSeats.clear();
       updateSelectedSeatsUI();
@@ -330,22 +330,50 @@
       document.getElementById('modalMovieTitle').innerText = title;
       document.getElementById('modalShowDetails').innerText = `${screen} • ${time}`;
 
-      renderSeatGrid();
+      const grid = document.getElementById('seatGrid');
+      grid.innerHTML = '<div class="text-center py-8 text-gray-400"><i class="fa-solid fa-spinner fa-spin mr-2"></i> Fetching live seat layout...</div>';
       document.getElementById('seatModal').classList.remove('hidden');
+
+      try {
+        const res = await fetch(`/api/v1/shows/${showId}/seats`);
+        const data = await res.json();
+        renderSeatGrid(data.seats || []);
+      } catch (err) {
+        grid.innerHTML = `<div class="text-center py-4 text-red-500 text-xs">Failed to load seats: ${err.message}</div>`;
+      }
     }
 
     function closeModal() {
       document.getElementById('seatModal').classList.add('hidden');
     }
 
-    // 4. Render Seat Layout (Rows A to D)
-    function renderSeatGrid() {
+    // 4. Render Live Seat Layout from Server Data
+    function renderSeatGrid(seatsList) {
       const grid = document.getElementById('seatGrid');
       grid.innerHTML = '';
 
-      const rows = ['D', 'C', 'B', 'A'];
-      rows.forEach(rowLabel => {
-        const info = SEAT_TIER_PRICES[rowLabel];
+      if (!seatsList || seatsList.length === 0) {
+        grid.innerHTML = '<div class="text-center text-gray-400 py-6 text-sm">No seating layout configured for this auditorium.</div>';
+        return;
+      }
+
+      // Group seats by row
+      const rowMap = new Map();
+      seatsList.forEach(s => {
+        if (!rowMap.has(s.row_label)) {
+          rowMap.set(s.row_label, []);
+        }
+        rowMap.get(s.row_label).push(s);
+      });
+
+      // Sort rows in descending order (D, C, B, A)
+      const sortedRowLabels = Array.from(rowMap.keys()).sort((a, b) => b.localeCompare(a));
+
+      sortedRowLabels.forEach(rowLabel => {
+        const rowSeats = rowMap.get(rowLabel).sort((a, b) => a.seat_number - b.seat_number);
+        const tier = rowSeats[0]?.seat_tier || 'CLASSIC';
+        const price = rowSeats[0]?.price || 250;
+
         const rowDiv = document.createElement('div');
         rowDiv.className = 'flex items-center space-x-2';
 
@@ -357,38 +385,42 @@
         const seatsDiv = document.createElement('div');
         seatsDiv.className = 'flex-1 flex justify-center space-x-2';
 
-        for (let num = 1; num <= 5; num++) {
-          const seatId = (rows.indexOf(rowLabel) * 5) + num;
-          const isHeld = (rowLabel === 'D' && num === 1); // Mock held seat 16
-
+        rowSeats.forEach(s => {
           const seat = document.createElement('button');
-          seat.className = `w-8 h-8 rounded text-xs font-semibold flex items-center justify-center transition ${
-            isHeld
-              ? 'bg-orange-400 text-white cursor-not-allowed'
-              : 'border border-green-500 text-green-700 hover:bg-green-50'
-          }`;
-          seat.innerText = num;
-          seat.disabled = isHeld;
+          const isSold = s.effective_status === 'BOOKED';
+          const isHeld = s.effective_status === 'HELD';
+          const isAvailable = s.effective_status === 'AVAILABLE';
 
-          if (!isHeld) {
+          if (isSold) {
+            seat.className = 'w-8 h-8 rounded text-xs font-semibold flex items-center justify-center bg-gray-300 text-gray-500 cursor-not-allowed shadow-inner';
+            seat.title = `Seat ${s.row_label}${s.seat_number} - SOLD OUT`;
+            seat.disabled = true;
+          } else if (isHeld) {
+            seat.className = 'w-8 h-8 rounded text-xs font-semibold flex items-center justify-center bg-orange-400 text-white cursor-not-allowed shadow-sm';
+            seat.title = `Seat ${s.row_label}${s.seat_number} - HELD (10m Timer Active)`;
+            seat.disabled = true;
+          } else {
+            seat.className = 'w-8 h-8 rounded text-xs font-semibold flex items-center justify-center transition border border-green-500 text-green-700 hover:bg-green-50';
+            seat.title = `Seat ${s.row_label}${s.seat_number} - ₹${price} (${tier})`;
             seat.onclick = () => {
-              if (selectedSeats.has(seatId)) {
-                selectedSeats.delete(seatId);
+              if (selectedSeats.has(s.seat_id)) {
+                selectedSeats.delete(s.seat_id);
                 seat.className = 'w-8 h-8 rounded text-xs font-semibold flex items-center justify-center transition border border-green-500 text-green-700 hover:bg-green-50';
               } else {
                 if (selectedSeats.size >= 6) {
                   alert('You can select a maximum of 6 seats.');
                   return;
                 }
-                selectedSeats.add(seatId);
+                selectedSeats.add(s.seat_id);
                 seat.className = 'w-8 h-8 rounded text-xs font-semibold flex items-center justify-center transition bg-green-500 text-white shadow-sm';
               }
               updateSelectedSeatsUI();
             };
           }
 
+          seat.innerText = s.seat_number;
           seatsDiv.appendChild(seat);
-        }
+        });
 
         rowDiv.appendChild(seatsDiv);
         grid.appendChild(rowDiv);

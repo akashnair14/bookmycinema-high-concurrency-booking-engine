@@ -11,6 +11,9 @@ router.get('/theatres/:theatreId/shows', ShowController.getShowsByTheatreAndDate
 // Supporting Date Picker Endpoint (Next 7 days strip)
 router.get('/theatres/:theatreId/dates', ShowController.getNextSevenDates);
 
+// Real-time Seat Layout & Status Endpoint
+router.get('/shows/:showId/seats', ShowController.getSeatsByShow);
+
 // Seat Holding Endpoint (Two-tier Redis + MySQL locking)
 router.post('/shows/:showId/hold-seats', BookingController.holdSeats);
 

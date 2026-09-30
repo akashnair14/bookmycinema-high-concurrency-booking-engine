@@ -225,4 +225,63 @@ export class ShowController {
       });
     }
   }
+
+  /**
+   * Real-time Seat Layout & Status Endpoint
+   * GET /api/v1/shows/:showId/seats
+   */
+  static async getSeatsByShow(req: Request, res: Response) {
+    try {
+      const showId = Number(req.params.showId);
+      if (isNaN(showId)) {
+        return res.status(400).json({ error: 'Valid showId is required.' });
+      }
+
+      // Query real-time status from show_seats + seats
+      const query = `
+        SELECT 
+          ss.id AS show_seat_id,
+          ss.seat_id,
+          st.row_label,
+          st.seat_number,
+          st.seat_tier,
+          ss.price,
+          CASE 
+            WHEN ss.status = 'BOOKED' THEN 'BOOKED'
+            WHEN ss.status = 'HELD' AND ss.held_until > NOW() THEN 'HELD'
+            ELSE 'AVAILABLE'
+          END AS effective_status
+        FROM show_seats ss
+        JOIN seats st ON ss.seat_id = st.id
+        WHERE ss.show_id = ?
+        ORDER BY st.row_label DESC, st.seat_number ASC;
+      `;
+
+      const [rows] = await pool.query<RowDataPacket[]>(query, [showId]);
+
+      if (rows.length === 0) {
+        // If show inventory isn't in show_seats yet, fetch screen layout and mark available
+        const fallbackQuery = `
+          SELECT 
+            st.id AS seat_id,
+            st.row_label,
+            st.seat_number,
+            st.seat_tier,
+            350.00 AS price,
+            'AVAILABLE' AS effective_status
+          FROM shows s
+          JOIN seats st ON s.screen_id = st.screen_id
+          WHERE s.id = ?
+          ORDER BY st.row_label DESC, st.seat_number ASC;
+        `;
+        const [fallbackRows] = await pool.query<RowDataPacket[]>(fallbackQuery, [showId]);
+        return res.json({ showId, totalSeats: fallbackRows.length, seats: fallbackRows });
+      }
+
+      return res.json({ showId, totalSeats: rows.length, seats: rows });
+    } catch (error: any) {
+      console.error('Error fetching seats for show:', error);
+      return res.status(500).json({ error: 'Internal server error while retrieving seats.' });
+    }
+  }
 }
