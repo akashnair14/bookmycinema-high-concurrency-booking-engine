@@ -40,24 +40,43 @@ export class PaymentService {
         };
       }
 
-      // Record payment attempt
-      await connection.query(
-        `INSERT INTO payments (
-          booking_id, idempotency_key, gateway_transaction_id, payment_gateway, amount, payment_status, raw_response
-        ) VALUES (?, ?, ?, ?, ?, ?, ?)`,
-        [
-          payload.bookingId,
-          payload.idempotencyKey,
-          payload.gatewayTransactionId,
-          payload.paymentGateway,
-          payload.amount,
-          payload.paymentStatus,
-          JSON.stringify(payload.rawResponse || {}),
-        ]
-      );
+      // Attempt to record payment atomically.
+      // Under high concurrency, two identical webhook calls might pass any prior SELECT check.
+      // We rely on the UNIQUE uq_idempotency_key constraint for atomic deduplication.
+      let isDuplicate = false;
+      try {
+        await connection.query(
+          `INSERT INTO payments (
+            booking_id, idempotency_key, gateway_transaction_id, payment_gateway, amount, payment_status, raw_response
+          ) VALUES (?, ?, ?, ?, ?, ?, ?)`,
+          [
+            payload.bookingId,
+            payload.idempotencyKey,
+            payload.gatewayTransactionId,
+            payload.paymentGateway,
+            payload.amount,
+            payload.paymentStatus,
+            JSON.stringify(payload.rawResponse || {}),
+          ]
+        );
+      } catch (err: any) {
+        if (err.code === 'ER_DUP_ENTRY' || err.message?.includes('Duplicate entry')) {
+          isDuplicate = true;
+        } else {
+          throw err;
+        }
+      }
+
+      if (isDuplicate) {
+        await connection.commit();
+        return {
+          status: 'DUPLICATE_IGNORED',
+          message: `Webhook with key ${payload.idempotencyKey} has already been processed.`,
+        };
+      }
 
       if (payload.paymentStatus === 'SUCCESS') {
-        // Fetch booking and check if not already confirmed/expired
+        // Fetch booking with lock
         const [bookings] = await connection.query<RowDataPacket[]>(
           `SELECT id, show_id, user_id, booking_status, expires_at FROM bookings WHERE id = ? FOR UPDATE`,
           [payload.bookingId]
@@ -69,20 +88,37 @@ export class PaymentService {
 
         const booking = bookings[0];
 
+        // Guard against payments arriving after the 10-minute hold has expired
+        if (booking.booking_status === 'EXPIRED' || (booking.booking_status === 'PENDING' && new Date(booking.expires_at) < new Date())) {
+          await connection.query(
+            `UPDATE bookings SET booking_status = 'EXPIRED' WHERE id = ?`,
+            [payload.bookingId]
+          );
+          await connection.query(
+            `UPDATE payments SET payment_status = 'REFUNDED' WHERE idempotency_key = ?`,
+            [payload.idempotencyKey]
+          );
+          await connection.commit();
+          return {
+            status: 'FAILED',
+            message: 'Seat hold expired before payment was confirmed. Refund initiated automatically.',
+          };
+        }
+
         // Confirm booking
         await connection.query(
           `UPDATE bookings SET booking_status = 'CONFIRMED' WHERE id = ?`,
           [payload.bookingId]
         );
 
-        // Fetch seat IDs for this booking to update them to BOOKED
+        // Fetch seat IDs for this booking
         const [seatRows] = await connection.query<RowDataPacket[]>(
           `SELECT seat_id FROM show_seats WHERE booking_id = ?`,
           [payload.bookingId]
         );
         const seatIds = seatRows.map((r) => r.seat_id);
 
-        // Permanently book seats in MySQL
+        // Permanently confirm seats in MySQL
         await connection.query(
           `UPDATE show_seats 
            SET status = 'BOOKED', held_until = NULL, version = version + 1
