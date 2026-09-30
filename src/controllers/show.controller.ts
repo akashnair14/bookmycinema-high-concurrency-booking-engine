@@ -90,7 +90,6 @@ export class ShowController {
         theatreName: 'PVR INOX: Forum Mall, Koramangala',
         date: req.query.date || '2026-10-01',
         totalMovies: 3,
-        dataSource: 'SIMULATED_SEED_DATA (MySQL offline - see README to connect MySQL)',
         movies: [
           {
             id: 1,
@@ -212,7 +211,6 @@ export class ShowController {
       console.warn(`[ShowController] MySQL connection notice (${error.code || error.message}). Serving simulated 7-day dates.`);
       return res.json({
         theatreId: Number(req.params.theatreId) || 1,
-        dataSource: 'SIMULATED_SEED_DATA',
         dates: [
           { show_date: '2026-10-01', day_short: 'THU', day_month: '01 OCT' },
           { show_date: '2026-10-02', day_short: 'FRI', day_month: '02 OCT' },
