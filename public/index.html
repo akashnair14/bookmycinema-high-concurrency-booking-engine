@@ -1494,17 +1494,30 @@
         text.innerText = 'None';
         total.innerText = '0';
         btn.disabled = true;
+      } else if (currentHold) {
+        const seatItems = Array.from(selectedSeats.values());
+        text.innerText = seatItems.map(item => item.label).join(', ');
+        const sum = seatItems.reduce((acc, item) => acc + item.price, 0);
+        total.innerText = sum.toLocaleString('en-IN');
+        btn.disabled = true;
+        btn.title = 'You already have an active hold session. Confirm payment or release it first.';
       } else {
         const seatItems = Array.from(selectedSeats.values());
         text.innerText = seatItems.map(item => item.label).join(', ');
         const sum = seatItems.reduce((acc, item) => acc + item.price, 0);
         total.innerText = sum.toLocaleString('en-IN');
         btn.disabled = false;
+        btn.title = '';
       }
     }
 
     // 5. Hold Seats (Two-tier Redis + MySQL Locking)
     async function holdSelectedSeats() {
+      if (currentHold) {
+        alert(`You already have an active hold session (${currentHold.ref}). Please confirm payment or release your current hold before holding new seats.`);
+        return;
+      }
+
       if (selectedSeats.size === 0) return;
 
       const holdBtn = document.getElementById('holdBtn');

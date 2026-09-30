@@ -16,15 +16,36 @@ export class BookingService {
   ): Promise<{ success: boolean; bookingId?: number; bookingRef?: string; message: string }> {
     const userKey = `user_${userId}`;
 
-    // Tier 1: Acquire atomic lock in Redis
-    const lockAcquired = await SeatLockService.acquireSeatHolds(showId, seatIds, userKey, ttlSeconds);
-    if (!lockAcquired) {
-      return { success: false, message: 'One or more selected seats are currently held or booked by another user.' };
-    }
-
     const connection = await pool.getConnection();
     try {
       await connection.beginTransaction();
+
+      // Guard: Ensure user doesn't already have an active hold session
+      const [existingActiveHolds] = await connection.query<RowDataPacket[]>(
+        `SELECT id, booking_reference, expires_at 
+         FROM bookings 
+         WHERE user_id = ? 
+           AND booking_status = 'PENDING' 
+           AND expires_at > NOW() 
+         LIMIT 1 
+         FOR UPDATE`,
+        [userId]
+      );
+
+      if (existingActiveHolds.length > 0) {
+        await connection.rollback();
+        return {
+          success: false,
+          message: `You already have an active hold session (${existingActiveHolds[0].booking_reference}). Please complete payment or release existing seats before holding another seat.`
+        };
+      }
+
+      // Tier 1: Acquire atomic lock in Redis
+      const lockAcquired = await SeatLockService.acquireSeatHolds(showId, seatIds, userKey, ttlSeconds);
+      if (!lockAcquired) {
+        await connection.rollback();
+        return { success: false, message: 'One or more selected seats are currently held or booked by another user.' };
+      }
 
       // If show inventory isn't initialized yet in show_seats for this show, initialize it from screens and seats
       const [existingShowSeats] = await connection.query<RowDataPacket[]>(
