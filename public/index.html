@@ -3,168 +3,271 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>BookMyShow - Movie Tickets, Showtimes & Cinema</title>
+  <title>Movie Tickets, Plays, Sports, Events & Cinemas near you - BookMyShow</title>
+  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Roboto -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+  <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
   <script>
     tailwind.config = {
       theme: {
         extend: {
+          fontFamily: {
+            sans: ['Roboto', 'sans-serif'],
+          },
           colors: {
             bms: {
-              red: '#f84464',
+              red: '#F84464',
+              redHover: '#e03251',
               dark: '#333545',
-              gray: '#666666',
-              lightGray: '#f5f5fa',
-              green: '#4abd5d',
-              border: '#e5e5e5'
+              darker: '#1F2533',
+              subnav: '#222539',
+              green: '#4ABD5D',
+              greenLight: '#E5FAEA',
+              grayBg: '#F5F5FA',
+              border: '#EEEEEE',
+              textDark: '#222222',
+              textMuted: '#666666',
+              textLight: '#999999',
             }
+          },
+          boxShadow: {
+            'bms': '0 1px 4px rgba(0,0,0,0.08)',
+            'card': '0 2px 8px rgba(0,0,0,0.06)',
+            'modal': '0 10px 40px rgba(0,0,0,0.2)',
           }
         }
       }
     }
   </script>
   <style>
+    body { font-family: 'Roboto', sans-serif; background-color: #F5F5FA; }
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-    .screen-arch {
-      border-top: 3px solid #60a5fa;
-      border-radius: 50% 50% 0 0 / 16px 16px 0 0;
-      box-shadow: 0 -6px 12px -2px rgba(96, 165, 250, 0.2);
+    
+    /* Authentic BookMyShow Screen Curved Arch */
+    .cinema-screen {
+      position: relative;
+      height: 24px;
+      border-top: 4px solid #1ea5fc;
+      border-radius: 50% 50% 0 0 / 20px 20px 0 0;
+      box-shadow: 0 -10px 20px -4px rgba(30, 165, 252, 0.35);
+    }
+    .cinema-screen::after {
+      content: 'All eyes this way please';
+      position: absolute;
+      top: 6px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #94a3b8;
+      font-weight: 500;
     }
   </style>
 </head>
-<body class="bg-gray-50 text-gray-800 font-sans min-h-screen flex flex-col">
+<body class="bg-bms-grayBg text-bms-textDark min-h-screen flex flex-col antialiased">
 
-  <!-- TOP NAVBAR -->
-  <header class="bg-bms-dark text-white sticky top-0 z-40 shadow-sm">
-    <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
-      <div class="flex items-center space-x-6">
-        <a href="/" class="flex items-center text-xl font-bold tracking-tight text-white">
-          <span class="text-white">book<span class="text-bms-red">my</span>show</span>
+  <!-- TOP PRIMARY NAVBAR -->
+  <header class="bg-bms-dark text-white sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 lg:px-8 py-3 flex items-center justify-between">
+      <!-- Logo & Search -->
+      <div class="flex items-center space-x-8 flex-1">
+        <a href="/" class="flex items-center tracking-tight flex-shrink-0">
+          <span class="text-white text-2xl font-black italic tracking-tighter">book<span class="text-bms-red">my</span>show</span>
         </a>
-        <div class="hidden md:flex items-center bg-white text-gray-700 rounded px-3 py-1.5 w-80 text-sm shadow-inner">
-          <i class="fa-solid fa-magnifying-glass text-gray-400 mr-2 text-xs"></i>
-          <input type="text" placeholder="Search for Movies, Cinemas..." class="w-full text-xs outline-none bg-transparent">
+        <div class="hidden md:flex items-center bg-white text-gray-700 rounded-sm px-3.5 py-1.5 w-full max-w-lg shadow-inner">
+          <i class="fa-solid fa-magnifying-glass text-gray-400 mr-2.5 text-xs"></i>
+          <input type="text" placeholder="Search for Movies, Events, Plays, Sports and Activities" class="w-full text-xs outline-none bg-transparent placeholder-gray-400">
         </div>
       </div>
-      <div class="flex items-center space-x-4 text-xs">
-        <div class="flex items-center space-x-1 cursor-pointer hover:text-gray-300">
-          <span>Bengaluru</span>
-          <i class="fa-solid fa-chevron-down text-[10px]"></i>
+
+      <!-- Location & Sign In -->
+      <div class="flex items-center space-x-6 text-xs font-normal">
+        <div class="flex items-center space-x-1 cursor-pointer hover:text-gray-200">
+          <span class="font-medium text-[13px]">Bengaluru</span>
+          <i class="fa-solid fa-chevron-down text-[9px] text-gray-400"></i>
         </div>
-        <button class="bg-bms-red hover:bg-red-600 text-white px-3.5 py-1.5 rounded font-medium text-xs transition">
+        <button class="bg-bms-red hover:bg-bms-redHover text-white px-4 py-1.5 rounded text-xs font-semibold tracking-wide transition shadow-sm">
           Sign In
         </button>
+        <button class="text-gray-300 hover:text-white text-lg">
+          <i class="fa-solid fa-bars"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- SECONDARY SUB-NAVBAR -->
+    <div class="bg-bms-subnav text-gray-300 border-t border-gray-700/50 text-[12px]">
+      <div class="max-w-7xl mx-auto px-4 lg:px-8 py-2 flex items-center justify-between">
+        <div class="flex items-center space-x-6">
+          <a href="#" class="text-white hover:text-bms-red font-medium">Movies</a>
+          <a href="#" class="hover:text-white transition">Stream</a>
+          <a href="#" class="hover:text-white transition">Events</a>
+          <a href="#" class="hover:text-white transition">Plays</a>
+          <a href="#" class="hover:text-white transition">Sports</a>
+          <a href="#" class="hover:text-white transition">Activities</a>
+        </div>
+        <div class="hidden lg:flex items-center space-x-6 text-[11px] text-gray-400">
+          <a href="#" class="hover:text-white transition">ListYourShow</a>
+          <a href="#" class="hover:text-white transition">Corporates</a>
+          <a href="#" class="hover:text-white transition">Offers</a>
+          <a href="#" class="hover:text-white transition">Gift Cards</a>
+        </div>
       </div>
     </div>
   </header>
 
-  <!-- THEATRE HEADER -->
-  <section class="bg-white border-b border-gray-200 py-4">
-    <div class="max-w-7xl mx-auto px-4">
-      <h1 id="theatreName" class="text-xl font-bold text-gray-900">PVR INOX: Forum Mall, Koramangala</h1>
-      <p class="text-xs text-gray-500 mt-1">
-        Hosur Road, Koramangala, Bengaluru &nbsp;|&nbsp; Food & Beverage &nbsp;|&nbsp; M-Ticket Available
-      </p>
-    </div>
-  </section>
+  <!-- THEATRE BREADCRUMB & DETAILS -->
+  <section class="bg-white border-b border-gray-200 pt-6 pb-4">
+    <div class="max-w-7xl mx-auto px-4 lg:px-8">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <div class="flex items-center space-x-3">
+            <h1 id="theatreName" class="text-2xl font-black text-gray-900 tracking-tight">PVR INOX: Forum Mall, Koramangala</h1>
+            <button class="text-gray-400 hover:text-bms-red transition text-sm">
+              <i class="fa-regular fa-heart"></i>
+            </button>
+          </div>
+          <p class="text-xs text-gray-500 mt-1 flex items-center space-x-2">
+            <span>Hosur Road, Chikku Lakshmaiah Layout, Koramangala, Bengaluru</span>
+          </p>
+          <div class="flex items-center space-x-4 mt-2.5 text-xs text-gray-600">
+            <span class="flex items-center text-green-700 font-medium"><i class="fa-solid fa-utensils text-green-600 mr-1.5 text-[11px]"></i>Food & Beverage</span>
+            <span class="flex items-center text-blue-700 font-medium"><i class="fa-solid fa-mobile-screen text-blue-600 mr-1.5 text-[11px]"></i>M-Ticket Available</span>
+            <span class="flex items-center text-gray-500"><i class="fa-solid fa-wheelchair text-gray-400 mr-1.5 text-[11px]"></i>Wheelchair Accessible</span>
+          </div>
+        </div>
 
-  <!-- 7-DAY DATE PICKER SLIDER -->
-  <section class="bg-white border-b border-gray-200 sticky top-12 z-30 shadow-sm">
-    <div class="max-w-7xl mx-auto px-4">
-      <div id="dateStrip" class="flex items-center space-x-2 py-2.5 overflow-x-auto no-scrollbar">
-        <!-- Rendered dynamically -->
+        <!-- Legend Tags -->
+        <div class="flex items-center space-x-4 text-[11px] text-gray-500 font-medium">
+          <span class="flex items-center"><span class="w-2.5 h-2.5 rounded-full bg-green-500 mr-1.5"></span>AVAILABLE</span>
+          <span class="flex items-center"><span class="w-2.5 h-2.5 rounded-full bg-orange-400 mr-1.5"></span>FAST FILLING</span>
+          <span class="flex items-center"><span class="w-2.5 h-2.5 rounded-full bg-gray-400 mr-1.5"></span>SOLD OUT</span>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- MOVIE SHOWTIMES LIST -->
-  <main class="max-w-7xl mx-auto px-4 py-6 flex-1 w-full">
+  <!-- 7-DAY HORIZONTAL DATE SELECTOR (BOOKMYSHOW STYLE) -->
+  <section class="bg-white border-b border-gray-200 sticky top-24 z-30 shadow-xs">
+    <div class="max-w-7xl mx-auto px-4 lg:px-8">
+      <div id="dateStrip" class="flex items-center space-x-3 py-3 overflow-x-auto no-scrollbar">
+        <!-- Rendered dynamically via JavaScript -->
+      </div>
+    </div>
+  </section>
+
+  <!-- MAIN LISTING: MOVIES & SHOWTIMES -->
+  <main class="max-w-7xl mx-auto px-4 lg:px-8 py-8 flex-1 w-full">
     <div id="movieList" class="space-y-4">
-      <div class="text-center py-12 text-gray-400 text-sm">Loading shows...</div>
+      <div class="text-center py-16 text-gray-400 text-sm">
+        <i class="fa-solid fa-circle-notch fa-spin mr-2 text-bms-red"></i> Loading live schedules...
+      </div>
     </div>
   </main>
 
   <!-- SEAT SELECTION MODAL -->
-  <div id="seatModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-    <div class="bg-white rounded-lg shadow-xl max-w-xl w-full overflow-hidden flex flex-col max-h-[90vh]">
-      <!-- Header -->
-      <div class="bg-gray-900 text-white px-5 py-3.5 flex items-center justify-between">
+  <div id="seatModal" class="fixed inset-0 bg-black/75 backdrop-blur-xs z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-xl shadow-modal max-w-2xl w-full overflow-hidden flex flex-col max-h-[92vh] animate-in fade-in zoom-in-95 duration-150">
+      
+      <!-- Modal Header -->
+      <div class="bg-bms-dark text-white px-6 py-4 flex items-center justify-between border-b border-gray-700">
         <div>
-          <h3 id="modalMovieTitle" class="font-bold text-base">Movie Title</h3>
-          <p id="modalShowDetails" class="text-xs text-gray-400">Audi 1 • 09:30 AM</p>
+          <h3 id="modalMovieTitle" class="font-bold text-lg text-white">Movie Title</h3>
+          <p id="modalShowDetails" class="text-xs text-gray-300 mt-0.5">Audi 1 • 09:30 AM</p>
         </div>
-        <button onclick="closeModal()" class="text-gray-400 hover:text-white text-lg">
+        <button onclick="closeModal()" class="text-gray-400 hover:text-white text-xl p-1 transition">
           <i class="fa-solid fa-xmark"></i>
         </button>
       </div>
 
-      <!-- Seating Canvas -->
-      <div class="p-6 overflow-y-auto flex-1">
-        <div class="text-center mb-6">
-          <div class="screen-arch w-3/4 mx-auto pt-2 text-[10px] tracking-wider text-gray-400 uppercase">
-            SCREEN THIS WAY
-          </div>
+      <!-- Seat Canvas -->
+      <div class="p-6 overflow-y-auto flex-1 bg-white">
+        <!-- Screen Curve -->
+        <div class="text-center mb-8">
+          <div class="cinema-screen w-3/4 mx-auto pt-3"></div>
         </div>
 
-        <div id="seatGrid" class="space-y-3 max-w-sm mx-auto">
-          <!-- Dynamically populated seats -->
+        <!-- Dynamic Seat Grid -->
+        <div id="seatGrid" class="space-y-4 max-w-md mx-auto">
+          <!-- Populated from live MySQL seat data -->
         </div>
 
         <!-- Legend -->
-        <div class="flex items-center justify-center space-x-5 mt-6 pt-4 border-t border-gray-100 text-xs text-gray-500">
-          <div class="flex items-center space-x-1.5">
-            <div class="w-3.5 h-3.5 border border-green-600 bg-white rounded"></div>
+        <div class="flex items-center justify-center space-x-6 mt-8 pt-5 border-t border-gray-100 text-xs text-gray-600 font-medium">
+          <div class="flex items-center space-x-2">
+            <div class="w-4 h-4 border border-green-600 rounded-sm bg-white"></div>
             <span>Available</span>
           </div>
-          <div class="flex items-center space-x-1.5">
-            <div class="w-3.5 h-3.5 bg-green-600 rounded"></div>
+          <div class="flex items-center space-x-2">
+            <div class="w-4 h-4 bg-bms-green rounded-sm"></div>
             <span>Selected</span>
           </div>
-          <div class="flex items-center space-x-1.5">
-            <div class="w-3.5 h-3.5 bg-orange-400 rounded"></div>
-            <span>Held</span>
+          <div class="flex items-center space-x-2">
+            <div class="w-4 h-4 bg-orange-400 rounded-sm"></div>
+            <span>Held (Lock)</span>
           </div>
-          <div class="flex items-center space-x-1.5">
-            <div class="w-3.5 h-3.5 bg-gray-300 rounded"></div>
+          <div class="flex items-center space-x-2">
+            <div class="w-4 h-4 bg-gray-300 rounded-sm"></div>
             <span>Sold</span>
           </div>
         </div>
       </div>
 
-      <!-- Footer -->
-      <div class="bg-gray-50 border-t border-gray-200 px-5 py-3.5 flex items-center justify-between">
+      <!-- Modal Footer Checkout Bar -->
+      <div class="bg-gray-50 border-t border-gray-200 px-6 py-4 flex items-center justify-between">
         <div>
-          <div class="text-[11px] text-gray-500">Seats: <span id="selectedSeatsText" class="font-semibold text-gray-800">None</span></div>
-          <div class="text-sm font-bold text-gray-900">Total: ₹<span id="totalAmount">0</span></div>
+          <div class="text-xs text-gray-500">Selected: <span id="selectedSeatsText" class="font-bold text-gray-900">None</span></div>
+          <div class="text-base font-black text-gray-900">Total: ₹<span id="totalAmount">0</span></div>
         </div>
-        <button id="holdBtn" onclick="holdSelectedSeats()" class="bg-bms-red hover:bg-red-600 text-white px-5 py-2 rounded text-xs font-semibold transition disabled:opacity-50 disabled:cursor-not-allowed">
-          Hold Seats
+        <button id="holdBtn" onclick="holdSelectedSeats()" class="bg-bms-red hover:bg-bms-redHover text-white px-6 py-2.5 rounded-lg text-sm font-bold tracking-wide transition shadow-md disabled:opacity-50 disabled:cursor-not-allowed">
+          Hold Seats & Proceed
         </button>
       </div>
     </div>
   </div>
 
-  <!-- HOLD TIMER BAR -->
-  <div id="activeHoldBanner" class="fixed bottom-4 right-4 bg-gray-900 text-white px-4 py-3 rounded-lg shadow-lg border border-gray-800 z-50 hidden max-w-sm">
-    <div class="flex items-center space-x-3">
-      <div class="flex-1">
-        <div class="text-xs text-gray-400">Ref: <span id="holdRef" class="font-mono text-white font-semibold">...</span></div>
-        <div class="text-xs font-semibold text-yellow-400 mt-0.5">Time Left: <span id="timerCountdown" class="font-mono font-bold">10:00</span></div>
+  <!-- ACTIVE HOLD COUNTDOWN BAR -->
+  <div id="activeHoldBanner" class="fixed bottom-6 right-6 bg-bms-dark text-white px-5 py-4 rounded-xl shadow-2xl border border-gray-700 z-50 hidden max-w-sm">
+    <div class="flex items-center space-x-4">
+      <div class="bg-bms-red text-white p-2.5 rounded-lg text-lg">
+        <i class="fa-solid fa-stopwatch"></i>
       </div>
-      <div class="flex items-center space-x-1.5">
-        <button onclick="simulatePayment()" class="bg-green-600 hover:bg-green-700 text-white text-xs font-semibold px-3 py-1.5 rounded transition">
-          Pay
+      <div class="flex-1">
+        <div class="text-xs text-gray-300">Lock Ref: <span id="holdRef" class="font-mono text-yellow-400 font-bold">...</span></div>
+        <div class="text-xs font-semibold text-yellow-400 mt-0.5">Expires in: <span id="timerCountdown" class="font-mono font-bold text-sm">10:00</span></div>
+      </div>
+      <div class="flex items-center space-x-2">
+        <button onclick="simulatePayment()" class="bg-green-600 hover:bg-green-700 text-white text-xs font-bold px-3 py-2 rounded-lg transition shadow-sm">
+          Pay Now
         </button>
-        <button onclick="cancelHold()" class="bg-gray-800 hover:bg-gray-700 text-gray-300 text-xs px-2.5 py-1.5 rounded transition">
+        <button onclick="cancelHold()" class="bg-gray-700 hover:bg-gray-600 text-gray-300 text-xs px-2.5 py-2 rounded-lg transition">
           Release
         </button>
       </div>
     </div>
   </div>
 
-  <!-- JAVASCRIPT -->
+  <!-- FOOTER -->
+  <footer class="bg-bms-dark text-gray-400 text-xs py-8 mt-auto border-t border-gray-800">
+    <div class="max-w-7xl mx-auto px-4 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4">
+      <div class="flex items-center space-x-2 text-white text-lg font-black italic tracking-tighter">
+        <span>book<span class="text-bms-red">my</span>show</span>
+      </div>
+      <div class="text-gray-400 text-center md:text-right">
+        High-Concurrency Cinema Ticketing Engine • ACID & Redis Locking Architecture
+      </div>
+    </div>
+  </footer>
+
+  <!-- CLIENT SCRIPT -->
   <script>
     const THEATRE_ID = 1;
     let selectedDate = '2026-10-01';
@@ -173,7 +276,7 @@
     let currentHold = null;
     let countdownInterval = null;
 
-    // Load Dates
+    // 1. Fetch 7-Day Date Slider
     async function loadDates() {
       try {
         const res = await fetch(`/api/v1/theatres/${THEATRE_ID}/dates`);
@@ -186,20 +289,22 @@
           if (idx === 0) selectedDate = d.show_date;
 
           const dateBtn = document.createElement('button');
-          dateBtn.className = `flex flex-col items-center justify-center px-4 py-1.5 rounded transition min-w-[65px] ${
-            isSelected ? 'bg-bms-red text-white' : 'text-gray-700 hover:bg-gray-100'
+          dateBtn.className = `flex flex-col items-center justify-center px-4 py-2 rounded-lg transition min-w-[70px] ${
+            isSelected 
+              ? 'bg-bms-red text-white shadow-md font-bold' 
+              : 'text-gray-700 hover:bg-gray-100 font-medium'
           }`;
           dateBtn.innerHTML = `
-            <span class="text-[10px] font-semibold uppercase">${d.day_short}</span>
-            <span class="text-xs font-bold">${d.day_month.split(' ')[0]}</span>
-            <span class="text-[9px] uppercase">${d.day_month.split(' ')[1]}</span>
+            <span class="text-[10px] uppercase tracking-wider font-semibold opacity-80">${d.day_short}</span>
+            <span class="text-base font-black leading-tight">${d.day_month.split(' ')[0]}</span>
+            <span class="text-[10px] uppercase font-bold tracking-tight">${d.day_month.split(' ')[1]}</span>
           `;
           dateBtn.onclick = () => {
             selectedDate = d.show_date;
             document.querySelectorAll('#dateStrip button').forEach(b => {
-              b.className = 'flex flex-col items-center justify-center px-4 py-1.5 rounded transition min-w-[65px] text-gray-700 hover:bg-gray-100';
+              b.className = 'flex flex-col items-center justify-center px-4 py-2 rounded-lg transition min-w-[70px] text-gray-700 hover:bg-gray-100 font-medium';
             });
-            dateBtn.className = 'flex flex-col items-center justify-center px-4 py-1.5 rounded transition min-w-[65px] bg-bms-red text-white';
+            dateBtn.className = 'flex flex-col items-center justify-center px-4 py-2 rounded-lg transition min-w-[70px] bg-bms-red text-white shadow-md font-bold';
             loadShows();
           };
           dateStrip.appendChild(dateBtn);
@@ -211,10 +316,10 @@
       }
     }
 
-    // Load Shows (P2)
+    // 2. Fetch Movies & Showtimes (P2 Query Endpoint)
     async function loadShows() {
       const container = document.getElementById('movieList');
-      container.innerHTML = '<div class="text-center py-10 text-gray-400 text-sm">Loading shows...</div>';
+      container.innerHTML = '<div class="text-center py-16 text-gray-400 text-sm"><i class="fa-solid fa-circle-notch fa-spin mr-2 text-bms-red"></i> Loading schedules...</div>';
 
       try {
         const res = await fetch(`/api/v1/theatres/${THEATRE_ID}/shows?date=${selectedDate}`);
@@ -225,42 +330,43 @@
         }
 
         if (!data.movies || data.movies.length === 0) {
-          container.innerHTML = `<div class="bg-white rounded-lg p-6 text-center text-gray-500 text-sm">No shows scheduled for ${selectedDate}.</div>`;
+          container.innerHTML = `<div class="bg-white rounded-xl p-10 text-center text-gray-500 font-medium shadow-bms">No shows scheduled for ${selectedDate}.</div>`;
           return;
         }
 
         container.innerHTML = '';
         data.movies.forEach(movie => {
           const card = document.createElement('div');
-          card.className = 'bg-white rounded-xl border border-gray-200 p-5 shadow-xs hover:border-gray-300 transition';
+          card.className = 'bg-white rounded-xl border border-gray-200 p-6 shadow-bms hover:shadow-card transition duration-200';
 
+          // Format showtime buttons matching BookMyShow
           const showPills = movie.shows.map(s => `
             <button onclick="openSeatModal(${s.showId}, '${movie.title}', '${s.screenNumber} • ${s.screenType}', '${s.showTime}')"
-              class="group min-w-[105px] border border-gray-300 hover:border-green-600 bg-white hover:bg-green-50/50 rounded-lg py-2 px-3 text-center transition flex flex-col items-center justify-center">
-              <span class="text-xs font-bold text-gray-900 group-hover:text-green-700 tracking-tight">${s.showTime}</span>
-              <span class="text-[10px] font-semibold text-gray-400 group-hover:text-green-600 uppercase tracking-wider mt-0.5">${s.screenType}</span>
+              class="group min-w-[110px] border border-gray-300 hover:border-green-600 bg-white hover:bg-green-50/40 rounded-md py-2.5 px-3 text-center transition flex flex-col items-center justify-center shadow-xs">
+              <span class="text-[13px] font-bold text-gray-900 group-hover:text-green-700 tracking-tight leading-tight">${s.showTime}</span>
+              <span class="text-[10px] font-bold text-gray-400 group-hover:text-green-600 uppercase tracking-widest mt-1">${s.screenType}</span>
             </button>
           `).join('');
 
           card.innerHTML = `
             <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-              <div class="space-y-1 lg:max-w-xs flex-shrink-0">
+              <!-- Left Movie Details -->
+              <div class="lg:w-80 flex-shrink-0 space-y-1">
                 <div class="flex items-center space-x-2">
-                  <h3 class="font-extrabold text-lg text-gray-950 tracking-tight leading-snug">${movie.title}</h3>
+                  <span class="text-xs text-gray-400 hover:text-bms-red cursor-pointer"><i class="fa-regular fa-heart"></i></span>
+                  <h3 class="font-bold text-lg text-gray-950 tracking-tight">${movie.title}</h3>
                 </div>
-                <div class="inline-block text-[11px] font-bold text-gray-700 bg-gray-100 px-2 py-0.5 rounded border border-gray-200">
-                  ${movie.certification}
+                <div class="flex items-center space-x-2 text-xs">
+                  <span class="inline-block text-[11px] font-bold text-gray-700 bg-gray-100 px-2 py-0.5 rounded border border-gray-200 uppercase">${movie.certification}</span>
+                  <span class="text-gray-500 font-medium truncate">${movie.language}</span>
                 </div>
-                <div class="text-xs text-gray-500 font-medium">
-                  ${movie.language}
-                </div>
-                <div class="text-[11px] text-gray-400">
+                <p class="text-[11px] text-gray-400 pt-1 font-normal">
                   ${movie.genre || 'Action/Drama'} &nbsp;•&nbsp; ${movie.duration || '2h 20m'}
-                </div>
+                </p>
               </div>
 
-              <!-- Showtimes list with flexible wrapping -->
-              <div class="flex flex-wrap gap-2.5 items-center flex-1 lg:justify-start">
+              <!-- Right Showtimes Grid -->
+              <div class="flex flex-wrap gap-3 items-center flex-1 lg:justify-start">
                 ${showPills}
               </div>
             </div>
@@ -268,11 +374,11 @@
           container.appendChild(card);
         });
       } catch (err) {
-        container.innerHTML = `<div class="text-center py-6 text-red-500 text-xs">Failed to load shows: ${err.message}</div>`;
+        container.innerHTML = `<div class="bg-red-50 text-red-600 rounded-xl p-6 text-center font-medium">Failed to load shows: ${err.message}</div>`;
       }
     }
 
-    // Open Seat Modal
+    // 3. Open Live Seat Modal
     async function openSeatModal(showId, title, screen, time) {
       currentShowId = showId;
       selectedSeats.clear();
@@ -282,7 +388,7 @@
       document.getElementById('modalShowDetails').innerText = `${screen} • ${time}`;
 
       const grid = document.getElementById('seatGrid');
-      grid.innerHTML = '<div class="text-center py-6 text-gray-400 text-xs">Loading seats...</div>';
+      grid.innerHTML = '<div class="text-center py-10 text-gray-400 text-xs"><i class="fa-solid fa-circle-notch fa-spin mr-2 text-bms-red"></i> Fetching real-time seat inventory...</div>';
       document.getElementById('seatModal').classList.remove('hidden');
 
       try {
@@ -298,13 +404,13 @@
       document.getElementById('seatModal').classList.add('hidden');
     }
 
-    // Render Seat Grid
+    // 4. Render Live Seat Grid
     function renderSeatGrid(seatsList) {
       const grid = document.getElementById('seatGrid');
       grid.innerHTML = '';
 
       if (!seatsList || seatsList.length === 0) {
-        grid.innerHTML = '<div class="text-center text-gray-400 py-4 text-xs">No seating layout found.</div>';
+        grid.innerHTML = '<div class="text-center text-gray-400 py-6 text-xs">No seating layout configured for this screen.</div>';
         return;
       }
 
@@ -318,18 +424,19 @@
 
       sortedRowLabels.forEach(rowLabel => {
         const rowSeats = rowMap.get(rowLabel).sort((a, b) => a.seat_number - b.seat_number);
+        const tier = rowSeats[0]?.seat_tier || 'CLASSIC';
         const price = rowSeats[0]?.price || 250;
 
         const rowDiv = document.createElement('div');
-        rowDiv.className = 'flex items-center space-x-2';
+        rowDiv.className = 'flex items-center space-x-3';
 
         const label = document.createElement('div');
-        label.className = 'w-5 text-xs font-bold text-gray-400 text-center';
+        label.className = 'w-6 text-xs font-bold text-gray-400 text-center';
         label.innerText = rowLabel;
         rowDiv.appendChild(label);
 
         const seatsDiv = document.createElement('div');
-        seatsDiv.className = 'flex-1 flex justify-center space-x-2';
+        seatsDiv.className = 'flex-1 flex justify-center space-x-2.5';
 
         rowSeats.forEach(s => {
           const seat = document.createElement('button');
@@ -337,24 +444,27 @@
           const isHeld = s.effective_status === 'HELD';
 
           if (isSold) {
-            seat.className = 'w-7 h-7 rounded text-[11px] font-medium flex items-center justify-center bg-gray-300 text-gray-500 cursor-not-allowed';
+            seat.className = 'w-8 h-8 rounded text-xs font-bold flex items-center justify-center bg-gray-300 text-gray-500 cursor-not-allowed';
+            seat.title = `Seat ${s.row_label}${s.seat_number} - SOLD OUT`;
             seat.disabled = true;
           } else if (isHeld) {
-            seat.className = 'w-7 h-7 rounded text-[11px] font-medium flex items-center justify-center bg-orange-400 text-white cursor-not-allowed';
+            seat.className = 'w-8 h-8 rounded text-xs font-bold flex items-center justify-center bg-orange-400 text-white cursor-not-allowed shadow-sm';
+            seat.title = `Seat ${s.row_label}${s.seat_number} - HELD (10m Timer)`;
             seat.disabled = true;
           } else {
-            seat.className = 'w-7 h-7 rounded text-[11px] font-medium flex items-center justify-center transition border border-green-600 text-green-700 hover:bg-green-50';
+            seat.className = 'w-8 h-8 rounded text-xs font-bold flex items-center justify-center transition border border-green-600 text-green-700 hover:bg-green-50 shadow-xs';
+            seat.title = `Seat ${s.row_label}${s.seat_number} - ₹${price} (${tier})`;
             seat.onclick = () => {
               if (selectedSeats.has(s.seat_id)) {
                 selectedSeats.delete(s.seat_id);
-                seat.className = 'w-7 h-7 rounded text-[11px] font-medium flex items-center justify-center transition border border-green-600 text-green-700 hover:bg-green-50';
+                seat.className = 'w-8 h-8 rounded text-xs font-bold flex items-center justify-center transition border border-green-600 text-green-700 hover:bg-green-50 shadow-xs';
               } else {
                 if (selectedSeats.size >= 6) {
                   alert('Maximum 6 seats allowed per booking.');
                   return;
                 }
                 selectedSeats.add(s.seat_id);
-                seat.className = 'w-7 h-7 rounded text-[11px] font-medium flex items-center justify-center transition bg-green-600 text-white';
+                seat.className = 'w-8 h-8 rounded text-xs font-bold flex items-center justify-center transition bg-bms-green text-white shadow-md';
               }
               updateSelectedSeatsUI();
             };
@@ -385,13 +495,13 @@
       }
     }
 
-    // Hold Seats
+    // 5. Hold Seats (Two-tier Redis + MySQL Locking)
     async function holdSelectedSeats() {
       if (selectedSeats.size === 0) return;
 
       const holdBtn = document.getElementById('holdBtn');
       holdBtn.disabled = true;
-      holdBtn.innerText = 'Holding...';
+      holdBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin mr-1"></i> Holding...';
 
       try {
         const res = await fetch(`/api/v1/shows/${currentShowId}/hold-seats`, {
@@ -416,11 +526,11 @@
         alert(`Error: ${err.message}`);
       } finally {
         holdBtn.disabled = false;
-        holdBtn.innerText = 'Hold Seats';
+        holdBtn.innerHTML = 'Hold Seats & Proceed';
       }
     }
 
-    // Countdown
+    // 6. Hold Timer Countdown
     function startHoldCountdown(ref, bookingId, durationSeconds) {
       if (countdownInterval) clearInterval(countdownInterval);
 
@@ -435,7 +545,7 @@
         if (currentHold.timeLeft <= 0) {
           clearInterval(countdownInterval);
           document.getElementById('activeHoldBanner').classList.add('hidden');
-          alert('Seat hold expired. Seats have been returned to inventory.');
+          alert('Seat hold expired. Seats have returned to available inventory.');
           return;
         }
 
@@ -445,7 +555,7 @@
       }, 1000);
     }
 
-    // Confirm Payment
+    // 7. Simulate Payment Webhook Call
     async function simulatePayment() {
       if (!currentHold) return;
 
@@ -478,7 +588,7 @@
       }
     }
 
-    // Release Hold
+    // 8. Explicit Release
     async function cancelHold() {
       if (!currentHold) return;
 
@@ -509,6 +619,7 @@
       }
     }
 
+    // Initialize
     loadDates();
   </script>
 </body>
