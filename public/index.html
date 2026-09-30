@@ -24,7 +24,7 @@
     <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
       <div class="flex items-center space-x-8 flex-1">
         <a href="/" class="text-2xl font-black italic tracking-tighter text-white">
-          book<span class="text-[#f84464]">my</span>show
+          book<span class="text-[#c81e3d]">my</span>show
         </a>
         <div class="hidden md:flex items-center bg-white text-gray-700 rounded px-3 py-1.5 w-96 text-xs shadow-inner">
           <i class="fa-solid fa-magnifying-glass text-gray-400 mr-2"></i>
@@ -36,7 +36,7 @@
           <span class="font-medium">Bengaluru</span>
           <i class="fa-solid fa-chevron-down text-[9px] text-gray-400"></i>
         </div>
-        <button class="bg-[#f84464] hover:bg-[#e03251] text-white px-4 py-1.5 rounded text-xs font-semibold transition">
+        <button class="bg-[#c81e3d] hover:bg-[#a8132f] text-white px-4 py-1.5 rounded text-xs font-semibold transition shadow-sm">
           Sign In
         </button>
       </div>
@@ -44,21 +44,7 @@
 
     <!-- SUB-NAVBAR -->
     <div class="bg-[#1f2533] text-gray-300 text-[12px] border-t border-gray-700/50">
-      <div class="max-w-6xl mx-auto px-4 py-2 flex items-center justify-between">
-        <div class="flex items-center space-x-6">
-          <a href="#" class="text-white hover:text-[#f84464] font-medium">Movies</a>
-          <a href="#" class="hover:text-white transition">Stream</a>
-          <a href="#" class="hover:text-white transition">Events</a>
-          <a href="#" class="hover:text-white transition">Plays</a>
-          <a href="#" class="hover:text-white transition">Sports</a>
-          <a href="#" class="hover:text-white transition">Activities</a>
-        </div>
-        <div class="hidden lg:flex items-center space-x-6 text-[11px] text-gray-400">
-          <a href="#" class="hover:text-white transition">ListYourShow</a>
-          <a href="#" class="hover:text-white transition">Offers</a>
-          <a href="#" class="hover:text-white transition">Gift Cards</a>
-        </div>
-      </div>
+
     </div>
   </header>
 
@@ -74,7 +60,7 @@
         </div>
         <div class="flex items-center space-x-4 text-[11px] text-gray-500 font-medium">
           <span class="flex items-center"><span class="w-2.5 h-2.5 rounded-full bg-[#4abd5d] mr-1.5"></span>AVAILABLE</span>
-          <span class="flex items-center"><span class="w-2.5 h-2.5 rounded-full bg-[#f84464] mr-1.5"></span>FAST FILLING</span>
+          <span class="flex items-center"><span class="w-2.5 h-2.5 rounded-full bg-[#c81e3d] mr-1.5"></span>FAST FILLING</span>
         </div>
       </div>
     </div>
@@ -150,7 +136,7 @@
           <div class="text-xs text-gray-500">Seats: <span id="selectedSeatsText" class="font-bold text-gray-800">None</span></div>
           <div class="text-sm font-bold text-gray-900">Total: ₹<span id="totalAmount">0</span></div>
         </div>
-        <button id="holdBtn" onclick="holdSelectedSeats()" class="bg-[#f84464] hover:bg-[#e03251] text-white px-5 py-2 rounded text-xs font-bold transition disabled:opacity-50 disabled:cursor-not-allowed">
+        <button id="holdBtn" onclick="holdSelectedSeats()" class="bg-[#c81e3d] hover:bg-[#a8132f] text-white px-5 py-2 rounded text-xs font-bold transition shadow-sm disabled:opacity-50 disabled:cursor-not-allowed">
           Hold Seats & Proceed
         </button>
       </div>
@@ -160,7 +146,7 @@
   <!-- HOLD TIMER BAR -->
   <div id="activeHoldBanner" class="fixed bottom-5 right-5 bg-[#333545] text-white px-5 py-3.5 rounded-lg shadow-xl border border-gray-700 z-50 hidden max-w-sm">
     <div class="flex items-center space-x-4">
-      <div class="bg-[#f84464] text-white p-2 rounded text-base">
+      <div class="bg-[#c81e3d] text-white p-2 rounded text-base">
         <i class="fa-solid fa-stopwatch"></i>
       </div>
       <div class="flex-1">
@@ -182,7 +168,7 @@
   <footer class="bg-[#333545] text-gray-400 text-xs py-6 mt-auto border-t border-gray-700">
     <div class="max-w-6xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-3">
       <div class="text-white text-lg font-black italic tracking-tighter">
-        book<span class="text-[#f84464]">my</span>show
+        book<span class="text-[#c81e3d]">my</span>show
       </div>
       <div class="text-gray-400 text-center md:text-right">
         Cinema Ticketing Engine • MySQL 8.4 & Redis Concurrency Architecture
@@ -214,7 +200,7 @@
           const dateBtn = document.createElement('button');
           dateBtn.className = `flex flex-col items-center justify-center px-4 py-2 rounded transition min-w-[65px] ${
             isSelected 
-              ? 'bg-[#f84464] text-white font-bold shadow-sm' 
+              ? 'bg-[#c81e3d] text-white font-bold shadow-sm' 
               : 'text-gray-700 hover:bg-gray-100 font-medium'
           }`;
           dateBtn.innerHTML = `
@@ -227,7 +213,7 @@
             document.querySelectorAll('#dateStrip button').forEach(b => {
               b.className = 'flex flex-col items-center justify-center px-4 py-2 rounded transition min-w-[65px] text-gray-700 hover:bg-gray-100 font-medium';
             });
-            dateBtn.className = 'flex flex-col items-center justify-center px-4 py-2 rounded transition min-w-[65px] bg-[#f84464] text-white font-bold shadow-sm';
+            dateBtn.className = 'flex flex-col items-center justify-center px-4 py-2 rounded transition min-w-[65px] bg-[#c81e3d] text-white font-bold shadow-sm';
             loadShows();
           };
           dateStrip.appendChild(dateBtn);
