@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BookMyShow - High-Concurrency Movie Booking</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            bms: {
+              red: '#f84464',
+              dark: '#333545',
+              gray: '#666666',
+              lightGray: '#f5f5fa',
+              green: '#4abd5d',
+              border: '#e5e5e5'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    .date-scroll::-webkit-scrollbar { display: none; }
+    .date-scroll { -ms-overflow-style: none; scrollbar-width: none; }
+    .screen-curve {
+      border-top: 4px solid #3b82f6;
+      border-radius: 50% 50% 0 0 / 20px 20px 0 0;
+      box-shadow: 0 -8px 16px -4px rgba(59, 130, 246, 0.25);
+    }
+  </style>
+</head>
+<body class="bg-gray-100 text-gray-800 font-sans min-h-screen flex flex-col">
+
+  <!-- TOP NAVBAR -->
+  <header class="bg-bms-dark text-white sticky top-0 z-40 shadow-md">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+      <div class="flex items-center space-x-6">
+        <a href="/" class="flex items-center space-x-2 text-2xl font-black tracking-tight text-white">
+          <span class="bg-bms-red text-white px-2 py-0.5 rounded font-bold text-xl">BMS</span>
+          <span class="text-white">book<span class="text-bms-red">my</span>show</span>
+        </a>
+        <div class="hidden md:flex items-center bg-white text-gray-700 rounded-md px-3 py-1.5 w-80 shadow-inner">
+          <i class="fa-solid fa-magnifying-glass text-gray-400 mr-2 text-sm"></i>
+          <input type="text" placeholder="Search for Movies, Events, Plays..." class="w-full text-sm outline-none bg-transparent">
+        </div>
+      </div>
+      <div class="flex items-center space-x-4 text-sm">
+        <div class="flex items-center space-x-1 cursor-pointer hover:text-gray-300">
+          <i class="fa-solid fa-location-dot text-bms-red"></i>
+          <span class="font-medium">Bengaluru</span>
+          <i class="fa-solid fa-chevron-down text-xs"></i>
+        </div>
+        <button class="bg-bms-red hover:bg-red-600 text-white px-4 py-1.5 rounded-md font-medium text-xs transition">
+          Sign In
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- SUBHEADER / THEATRE INFO -->
+  <section class="bg-white border-b border-gray-200 py-5">
+    <div class="max-w-7xl mx-auto px-4">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <div class="flex items-center space-x-2">
+            <h1 id="theatreName" class="text-2xl font-bold text-gray-900">PVR INOX: Forum Mall, Koramangala</h1>
+            <span class="bg-gray-100 text-gray-600 text-xs px-2 py-0.5 rounded border border-gray-300 font-semibold">INFO</span>
+          </div>
+          <p class="text-sm text-gray-500 mt-1">
+            <i class="fa-solid fa-location-dot text-gray-400 mr-1"></i> Hosur Rd, Koramangala, Bengaluru | 
+            <span class="text-green-600 font-medium"><i class="fa-solid fa-utensils mr-1"></i>Food & Beverage</span> | 
+            <span class="text-blue-600 font-medium"><i class="fa-solid fa-ticket mr-1"></i>M-Ticket Available</span>
+          </p>
+        </div>
+        <div class="flex items-center space-x-3 text-xs">
+          <span class="flex items-center space-x-1 text-green-700 bg-green-50 px-2.5 py-1 rounded border border-green-200">
+            <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+            <span>Live Inventory Engine</span>
+          </span>
+          <span class="bg-purple-50 text-purple-700 border border-purple-200 px-2.5 py-1 rounded font-medium">
+            <i class="fa-solid fa-bolt text-yellow-500 mr-1"></i> Sub-millisecond Locking
+          </span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DATE PICKER STRIP (7 DAYS) -->
+  <section class="bg-white border-b border-gray-200 sticky top-14 z-30 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4">
+      <div id="dateStrip" class="flex items-center space-x-3 py-3 overflow-x-auto date-scroll">
+        <!-- Injected via JavaScript -->
+        <div class="text-xs text-gray-400">Loading show dates...</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MAIN CONTENT: MOVIES & SHOWS LIST -->
+  <main class="max-w-7xl mx-auto px-4 py-6 flex-1 w-full">
+    <div class="flex items-center justify-between mb-4">
+      <div class="flex items-center space-x-3 text-xs font-medium text-gray-500">
+        <span class="flex items-center"><span class="w-2 h-2 rounded-full bg-green-500 mr-1"></span> AVAILABLE</span>
+        <span class="flex items-center"><span class="w-2 h-2 rounded-full bg-yellow-500 mr-1"></span> FAST FILLING</span>
+        <span class="flex items-center"><span class="w-2 h-2 rounded-full bg-orange-500 mr-1"></span> HELD (TIMER)</span>
+        <span class="flex items-center"><span class="w-2 h-2 rounded-full bg-gray-400 mr-1"></span> BOOKED</span>
+      </div>
+      <div class="text-xs text-gray-400">
+        Showing schedules for <span id="currentDateDisplay" class="font-bold text-gray-700">2026-10-01</span>
+      </div>
+    </div>
+
+    <div id="movieList" class="space-y-4">
+      <!-- Movies will be rendered here dynamically -->
+      <div class="text-center py-12 text-gray-500">Loading shows from server...</div>
+    </div>
+  </main>
+
+  <!-- SEAT SELECTION & CONCURRENCY HOLD MODAL -->
+  <div id="seatModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-xl shadow-2xl max-w-2xl w-full overflow-hidden flex flex-col max-h-[90vh]">
+      <!-- Modal Header -->
+      <div class="bg-bms-dark text-white px-6 py-4 flex items-center justify-between">
+        <div>
+          <h3 id="modalMovieTitle" class="font-bold text-lg">Movie Title</h3>
+          <p id="modalShowDetails" class="text-xs text-gray-300">Screen • 09:30 AM</p>
+        </div>
+        <button onclick="closeModal()" class="text-gray-400 hover:text-white text-xl">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <!-- Modal Body (Seat Layout) -->
+      <div class="p-6 overflow-y-auto flex-1">
+        <div class="text-center mb-6">
+          <div class="screen-curve w-3/4 mx-auto pt-3 text-xs font-semibold tracking-widest text-gray-400 uppercase">
+            All eyes this way please
+          </div>
+        </div>
+
+        <div id="seatGrid" class="space-y-4 max-w-md mx-auto">
+          <!-- Dynamically generated seats -->
+        </div>
+
+        <!-- Legend -->
+        <div class="flex items-center justify-center space-x-6 mt-8 pt-4 border-t border-gray-100 text-xs text-gray-600">
+          <div class="flex items-center space-x-1.5">
+            <div class="w-4 h-4 border border-green-500 bg-white rounded"></div>
+            <span>Available</span>
+          </div>
+          <div class="flex items-center space-x-1.5">
+            <div class="w-4 h-4 bg-green-500 rounded"></div>
+            <span>Selected</span>
+          </div>
+          <div class="flex items-center space-x-1.5">
+            <div class="w-4 h-4 bg-orange-400 rounded"></div>
+            <span>Held (10m Lock)</span>
+          </div>
+          <div class="flex items-center space-x-1.5">
+            <div class="w-4 h-4 bg-gray-300 rounded cursor-not-allowed"></div>
+            <span>Sold</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="bg-gray-50 border-t border-gray-200 px-6 py-4 flex items-center justify-between">
+        <div>
+          <div class="text-xs text-gray-500">Selected Seats: <span id="selectedSeatsText" class="font-bold text-gray-800">None</span></div>
+          <div class="text-sm font-black text-gray-900">Total: ₹<span id="totalAmount">0</span></div>
+        </div>
+        <div class="flex space-x-2">
+          <button id="holdBtn" onclick="holdSelectedSeats()" class="bg-bms-red hover:bg-red-600 text-white px-5 py-2.5 rounded-lg text-sm font-semibold transition disabled:opacity-50 disabled:cursor-not-allowed">
+            <i class="fa-solid fa-lock mr-1.5"></i> Hold Seats (10m Timer)
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ACTIVE HOLD COUNTDOWN TOAST -->
+  <div id="activeHoldBanner" class="fixed bottom-5 right-5 bg-gray-900 text-white px-5 py-4 rounded-xl shadow-2xl border border-gray-700 z-50 hidden max-w-sm">
+    <div class="flex items-start space-x-3">
+      <div class="bg-bms-red text-white p-2 rounded-lg text-lg">
+        <i class="fa-solid fa-stopwatch"></i>
+      </div>
+      <div>
+        <h4 class="font-bold text-sm">Seats Held Under Lock</h4>
+        <p class="text-xs text-gray-300 mt-0.5">Booking Ref: <span id="holdRef" class="font-mono text-yellow-400">...</span></p>
+        <div class="flex items-center space-x-2 mt-2">
+          <span class="text-xs font-semibold text-yellow-400">Time Left: <span id="timerCountdown" class="font-mono font-bold text-sm">10:00</span></span>
+        </div>
+        <div class="mt-3 flex space-x-2">
+          <button onclick="simulatePayment()" class="bg-green-600 hover:bg-green-700 text-white text-xs font-bold px-3 py-1.5 rounded transition">
+            <i class="fa-solid fa-check mr-1"></i> Pay & Confirm
+          </button>
+          <button onclick="cancelHold()" class="bg-gray-700 hover:bg-gray-600 text-gray-300 text-xs px-2.5 py-1.5 rounded transition">
+            Release
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCRIPT -->
+  <script>
+    const THEATRE_ID = 1;
+    let selectedDate = '2026-10-01';
+    let currentShowId = null;
+    let selectedSeats = new Set();
+    let currentHold = null;
+    let countdownInterval = null;
+
+    const SEAT_TIER_PRICES = {
+      'D': { tier: 'RECLINER', price: 600 },
+      'C': { tier: 'PRIME_PLUS', price: 450 },
+      'B': { tier: 'PRIME', price: 350 },
+      'A': { tier: 'CLASSIC', price: 250 },
+    };
+
+    // 1. Fetch available dates for slider
+    async function loadDates() {
+      try {
+        const res = await fetch(`/api/v1/theatres/${THEATRE_ID}/dates`);
+        const data = await res.json();
+        const dateStrip = document.getElementById('dateStrip');
+        dateStrip.innerHTML = '';
+
+        data.dates.forEach((d, idx) => {
+          const isSelected = d.show_date === selectedDate || idx === 0;
+          if (idx === 0) selectedDate = d.show_date;
+
+          const dateBtn = document.createElement('button');
+          dateBtn.className = `flex flex-col items-center justify-center px-4 py-2 rounded-lg transition min-w-[70px] ${
+            isSelected ? 'bg-bms-red text-white shadow-md' : 'text-gray-700 hover:bg-gray-100'
+          }`;
+          dateBtn.innerHTML = `
+            <span class="text-[11px] font-bold uppercase tracking-wider">${d.day_short}</span>
+            <span class="text-sm font-extrabold">${d.day_month.split(' ')[0]}</span>
+            <span class="text-[10px] uppercase">${d.day_month.split(' ')[1]}</span>
+          `;
+          dateBtn.onclick = () => {
+            selectedDate = d.show_date;
+            document.querySelectorAll('#dateStrip button').forEach(b => {
+              b.className = 'flex flex-col items-center justify-center px-4 py-2 rounded-lg transition min-w-[70px] text-gray-700 hover:bg-gray-100';
+            });
+            dateBtn.className = 'flex flex-col items-center justify-center px-4 py-2 rounded-lg transition min-w-[70px] bg-bms-red text-white shadow-md';
+            loadShows();
+          };
+          dateStrip.appendChild(dateBtn);
+        });
+
+        loadShows();
+      } catch (err) {
+        console.error('Failed to load dates', err);
+      }
+    }
+
+    // 2. Fetch movies and showtimes for selected date (P2 Endpoint)
+    async function loadShows() {
+      const container = document.getElementById('movieList');
+      document.getElementById('currentDateDisplay').innerText = selectedDate;
+      container.innerHTML = '<div class="text-center py-12 text-gray-400"><i class="fa-solid fa-spinner fa-spin mr-2"></i> Loading showtimes...</div>';
+
+      try {
+        const res = await fetch(`/api/v1/theatres/${THEATRE_ID}/shows?date=${selectedDate}`);
+        const data = await res.json();
+
+        if (data.theatreName) {
+          document.getElementById('theatreName').innerText = data.theatreName;
+        }
+
+        if (!data.movies || data.movies.length === 0) {
+          container.innerHTML = `<div class="bg-white rounded-xl p-8 text-center text-gray-500">No shows scheduled for ${selectedDate}.</div>`;
+          return;
+        }
+
+        container.innerHTML = '';
+        data.movies.forEach(movie => {
+          const card = document.createElement('div');
+          card.className = 'bg-white rounded-xl shadow-sm border border-gray-200 p-5 hover:shadow-md transition';
+
+          const showPills = movie.shows.map(s => `
+            <button onclick="openSeatModal(${s.showId}, '${movie.title}', '${s.screenNumber} • ${s.screenType}', '${s.showTime}')"
+              class="border border-green-500 hover:bg-green-50 text-green-700 font-semibold text-xs px-3.5 py-2 rounded-lg flex flex-col items-center transition">
+              <span class="text-sm font-bold text-gray-800">${s.showTime}</span>
+              <span class="text-[10px] text-gray-500">${s.screenType}</span>
+            </button>
+          `).join('');
+
+          card.innerHTML = `
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div class="flex items-start space-x-3">
+                <div class="bg-gray-100 rounded-lg w-12 h-16 flex items-center justify-center text-gray-400 text-xl font-bold flex-shrink-0">
+                  <i class="fa-solid fa-film text-gray-300"></i>
+                </div>
+                <div>
+                  <div class="flex items-center space-x-2">
+                    <h3 class="font-bold text-lg text-gray-900">${movie.title}</h3>
+                    <span class="border border-gray-300 text-gray-500 text-[10px] font-bold px-1.5 py-0.5 rounded">${movie.certification}</span>
+                  </div>
+                  <p class="text-xs text-gray-500 mt-0.5">${movie.language} • ${movie.genre} • ${movie.duration}</p>
+                  <div class="flex items-center space-x-3 mt-2 text-[11px] text-gray-400">
+                    <span><i class="fa-solid fa-circle-check text-green-500 mr-1"></i>Cancellation Available</span>
+                  </div>
+                </div>
+              </div>
+              <div class="flex flex-wrap gap-2.5 items-center">
+                ${showPills}
+              </div>
+            </div>
+          `;
+          container.appendChild(card);
+        });
+      } catch (err) {
+        container.innerHTML = `<div class="bg-red-50 text-red-600 rounded-xl p-6 text-center">Failed to load shows: ${err.message}</div>`;
+      }
+    }
+
+    // 3. Open Seat Modal
+    function openSeatModal(showId, title, screen, time) {
+      currentShowId = showId;
+      selectedSeats.clear();
+      updateSelectedSeatsUI();
+
+      document.getElementById('modalMovieTitle').innerText = title;
+      document.getElementById('modalShowDetails').innerText = `${screen} • ${time}`;
+
+      renderSeatGrid();
+      document.getElementById('seatModal').classList.remove('hidden');
+    }
+
+    function closeModal() {
+      document.getElementById('seatModal').classList.add('hidden');
+    }
+
+    // 4. Render Seat Layout (Rows A to D)
+    function renderSeatGrid() {
+      const grid = document.getElementById('seatGrid');
+      grid.innerHTML = '';
+
+      const rows = ['D', 'C', 'B', 'A'];
+      rows.forEach(rowLabel => {
+        const info = SEAT_TIER_PRICES[rowLabel];
+        const rowDiv = document.createElement('div');
+        rowDiv.className = 'flex items-center space-x-2';
+
+        const label = document.createElement('div');
+        label.className = 'w-6 text-xs font-bold text-gray-400 text-center';
+        label.innerText = rowLabel;
+        rowDiv.appendChild(label);
+
+        const seatsDiv = document.createElement('div');
+        seatsDiv.className = 'flex-1 flex justify-center space-x-2';
+
+        for (let num = 1; num <= 5; num++) {
+          const seatId = (rows.indexOf(rowLabel) * 5) + num;
+          const isHeld = (rowLabel === 'D' && num === 1); // Mock held seat 16
+
+          const seat = document.createElement('button');
+          seat.className = `w-8 h-8 rounded text-xs font-semibold flex items-center justify-center transition ${
+            isHeld
+              ? 'bg-orange-400 text-white cursor-not-allowed'
+              : 'border border-green-500 text-green-700 hover:bg-green-50'
+          }`;
+          seat.innerText = num;
+          seat.disabled = isHeld;
+
+          if (!isHeld) {
+            seat.onclick = () => {
+              if (selectedSeats.has(seatId)) {
+                selectedSeats.delete(seatId);
+                seat.className = 'w-8 h-8 rounded text-xs font-semibold flex items-center justify-center transition border border-green-500 text-green-700 hover:bg-green-50';
+              } else {
+                if (selectedSeats.size >= 6) {
+                  alert('You can select a maximum of 6 seats.');
+                  return;
+                }
+                selectedSeats.add(seatId);
+                seat.className = 'w-8 h-8 rounded text-xs font-semibold flex items-center justify-center transition bg-green-500 text-white shadow-sm';
+              }
+              updateSelectedSeatsUI();
+            };
+          }
+
+          seatsDiv.appendChild(seat);
+        }
+
+        rowDiv.appendChild(seatsDiv);
+        grid.appendChild(rowDiv);
+      });
+    }
+
+    function updateSelectedSeatsUI() {
+      const text = document.getElementById('selectedSeatsText');
+      const total = document.getElementById('totalAmount');
+      const btn = document.getElementById('holdBtn');
+
+      if (selectedSeats.size === 0) {
+        text.innerText = 'None';
+        total.innerText = '0';
+        btn.disabled = true;
+      } else {
+        text.innerText = Array.from(selectedSeats).join(', ');
+        total.innerText = (selectedSeats.size * 350).toString(); // Average ₹350
+        btn.disabled = false;
+      }
+    }
+
+    // 5. Hold Selected Seats (API Call)
+    async function holdSelectedSeats() {
+      if (selectedSeats.size === 0) return;
+
+      const holdBtn = document.getElementById('holdBtn');
+      holdBtn.disabled = true;
+      holdBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1"></i> Holding...';
+
+      try {
+        const res = await fetch(`/api/v1/shows/${currentShowId}/hold-seats`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            seatIds: Array.from(selectedSeats),
+            userId: 1,
+            ttlSeconds: 600
+          })
+        });
+
+        const data = await res.json();
+        closeModal();
+
+        if (res.status === 200 && data.status === 'HELD') {
+          startHoldCountdown(data.bookingReference, data.bookingId, data.expiresInSeconds);
+        } else {
+          alert(`Conflict: ${data.message || 'Seat could not be held.'}`);
+        }
+      } catch (err) {
+        alert(`Error: ${err.message}`);
+      } finally {
+        holdBtn.disabled = false;
+        holdBtn.innerHTML = '<i class="fa-solid fa-lock mr-1.5"></i> Hold Seats (10m Timer)';
+      }
+    }
+
+    // 6. Hold Timer Countdown
+    function startHoldCountdown(ref, bookingId, durationSeconds) {
+      if (countdownInterval) clearInterval(countdownInterval);
+
+      currentHold = { ref, bookingId, timeLeft: durationSeconds };
+      document.getElementById('holdRef').innerText = ref;
+      document.getElementById('activeHoldBanner').classList.remove('hidden');
+
+      const timerEl = document.getElementById('timerCountdown');
+
+      countdownInterval = setInterval(() => {
+        currentHold.timeLeft--;
+        if (currentHold.timeLeft <= 0) {
+          clearInterval(countdownInterval);
+          document.getElementById('activeHoldBanner').classList.add('hidden');
+          alert('Hold expired! The seats have been released back to available inventory.');
+          return;
+        }
+
+        const mins = Math.floor(currentHold.timeLeft / 60).toString().padStart(2, '0');
+        const secs = (currentHold.timeLeft % 60).toString().padStart(2, '0');
+        timerEl.innerText = `${mins}:${secs}`;
+      }, 1000);
+    }
+
+    // 7. Simulate Payment Webhook Call
+    async function simulatePayment() {
+      if (!currentHold) return;
+
+      try {
+        const idempotencyKey = `PAY-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`;
+        const res = await fetch('/api/v1/webhooks/payment', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            idempotencyKey,
+            bookingId: currentHold.bookingId,
+            gatewayTransactionId: 'txn_rzp_' + Date.now(),
+            paymentGateway: 'RAZORPAY',
+            amount: 700,
+            paymentStatus: 'SUCCESS'
+          })
+        });
+
+        const data = await res.json();
+        if (res.ok) {
+          clearInterval(countdownInterval);
+          document.getElementById('activeHoldBanner').classList.add('hidden');
+          alert(`🎉 Payment Successful!\n${data.message}\nYour tickets are confirmed.`);
+          loadShows();
+        } else {
+          alert(`Payment Error: ${data.error}`);
+        }
+      } catch (err) {
+        alert(`Payment Failed: ${err.message}`);
+      }
+    }
+
+    function cancelHold() {
+      if (countdownInterval) clearInterval(countdownInterval);
+      document.getElementById('activeHoldBanner').classList.add('hidden');
+      currentHold = null;
+    }
+
+    // Initialize
+    loadDates();
+  </script>
+</body>
+</html>
