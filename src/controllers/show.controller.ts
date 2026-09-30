@@ -192,7 +192,7 @@ export class ShowController {
 
       const query = `
         SELECT DISTINCT
-          DATE(s.start_time) AS show_date,
+          DATE_FORMAT(s.start_time, '%Y-%m-%d') AS show_date,
           DATE_FORMAT(s.start_time, '%a') AS day_short,
           DATE_FORMAT(s.start_time, '%d %b') AS day_month
         FROM shows s
