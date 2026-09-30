@@ -48,4 +48,29 @@ export class BookingController {
       return res.status(500).json({ error: 'Internal error processing seat hold request.' });
     }
   }
+
+  /**
+   * Release Seats endpoint:
+   * POST /api/v1/shows/:showId/release-seats
+   */
+  static async releaseHold(req: Request, res: Response) {
+    try {
+      const showId = Number(req.params.showId);
+      const { bookingId, userId = 1 } = req.body;
+
+      if (!bookingId || isNaN(showId)) {
+        return res.status(400).json({ error: 'Valid showId and bookingId are required.' });
+      }
+
+      await BookingService.releaseUserHold(showId, Number(bookingId), Number(userId));
+
+      return res.json({
+        status: 'RELEASED',
+        message: 'Seats have been successfully released back to available inventory.',
+      });
+    } catch (error) {
+      console.error('Error releasing seats:', error);
+      return res.status(500).json({ error: 'Internal error releasing seat hold.' });
+    }
+  }
 }

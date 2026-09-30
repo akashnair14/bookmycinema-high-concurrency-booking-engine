@@ -536,10 +536,36 @@
       }
     }
 
-    function cancelHold() {
+    async function cancelHold() {
+      if (!currentHold) return;
+
+      const holdToRelease = currentHold;
       if (countdownInterval) clearInterval(countdownInterval);
       document.getElementById('activeHoldBanner').classList.add('hidden');
       currentHold = null;
+
+      try {
+        const res = await fetch(`/api/v1/shows/${currentShowId || 1}/release-seats`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            bookingId: holdToRelease.bookingId,
+            userId: 1
+          })
+        });
+
+        const data = await res.json();
+        if (res.ok) {
+          // If modal is open, refresh seat layout immediately
+          if (!document.getElementById('seatModal').classList.contains('hidden') && currentShowId) {
+            const seatsRes = await fetch(`/api/v1/shows/${currentShowId}/seats`);
+            const seatsData = await seatsRes.json();
+            renderSeatGrid(seatsData.seats || []);
+          }
+        }
+      } catch (err) {
+        console.error('Failed to release hold:', err);
+      }
     }
 
     // Initialize

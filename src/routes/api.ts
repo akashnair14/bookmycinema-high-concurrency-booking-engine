@@ -17,6 +17,9 @@ router.get('/shows/:showId/seats', ShowController.getSeatsByShow);
 // Seat Holding Endpoint (Two-tier Redis + MySQL locking)
 router.post('/shows/:showId/hold-seats', BookingController.holdSeats);
 
+// Seat Releasing Endpoint
+router.post('/shows/:showId/release-seats', BookingController.releaseHold);
+
 // Idempotent Payment Webhook Endpoint
 router.post('/webhooks/payment', WebhookController.handlePaymentWebhook);
 

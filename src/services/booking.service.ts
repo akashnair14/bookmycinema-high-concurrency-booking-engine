@@ -85,6 +85,59 @@ export class BookingService {
   }
 
   /**
+   * Explicitly release seats held by a user (e.g. user clicks "Release" or navigates away)
+   */
+  static async releaseUserHold(
+    showId: number,
+    bookingId: number,
+    userId: number
+  ): Promise<boolean> {
+    const userKey = `user_${userId}`;
+    const connection = await pool.getConnection();
+
+    try {
+      await connection.beginTransaction();
+
+      // Fetch seats belonging to this pending booking
+      const [rows] = await connection.query<RowDataPacket[]>(
+        `SELECT seat_id FROM show_seats WHERE booking_id = ? AND status = 'HELD'`,
+        [bookingId]
+      );
+
+      const seatIds = rows.map((r) => r.seat_id);
+
+      // Release in MySQL
+      await connection.query(
+        `UPDATE show_seats
+         SET status = 'AVAILABLE', booking_id = NULL, held_at = NULL, held_until = NULL, version = version + 1
+         WHERE booking_id = ? AND status = 'HELD'`,
+        [bookingId]
+      );
+
+      await connection.query(
+        `UPDATE bookings
+         SET booking_status = 'CANCELLED'
+         WHERE id = ? AND booking_status = 'PENDING'`,
+        [bookingId]
+      );
+
+      await connection.commit();
+
+      // Release in Redis
+      if (seatIds.length > 0) {
+        await SeatLockService.releaseSeatHolds(showId, seatIds, userKey);
+      }
+
+      return true;
+    } catch (error) {
+      await connection.rollback();
+      throw error;
+    } finally {
+      connection.release();
+    }
+  }
+
+  /**
    * Release expired seat holds (Safety background task / worker)
    */
   static async releaseExpiredHolds(): Promise<number> {
