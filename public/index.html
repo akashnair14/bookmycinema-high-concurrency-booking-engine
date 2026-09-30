@@ -232,24 +232,35 @@
         container.innerHTML = '';
         data.movies.forEach(movie => {
           const card = document.createElement('div');
-          card.className = 'bg-white rounded-lg border border-gray-200 p-4';
+          card.className = 'bg-white rounded-xl border border-gray-200 p-5 shadow-xs hover:border-gray-300 transition';
 
           const showPills = movie.shows.map(s => `
             <button onclick="openSeatModal(${s.showId}, '${movie.title}', '${s.screenNumber} • ${s.screenType}', '${s.showTime}')"
-              class="border border-green-600 hover:bg-green-50 text-green-700 text-xs px-3 py-1.5 rounded flex flex-col items-center transition">
-              <span class="font-bold text-gray-800">${s.showTime}</span>
-              <span class="text-[9px] text-gray-500">${s.screenType}</span>
+              class="group min-w-[105px] border border-gray-300 hover:border-green-600 bg-white hover:bg-green-50/50 rounded-lg py-2 px-3 text-center transition flex flex-col items-center justify-center">
+              <span class="text-xs font-bold text-gray-900 group-hover:text-green-700 tracking-tight">${s.showTime}</span>
+              <span class="text-[10px] font-semibold text-gray-400 group-hover:text-green-600 uppercase tracking-wider mt-0.5">${s.screenType}</span>
             </button>
           `).join('');
 
           card.innerHTML = `
-            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
-              <div class="space-y-0.5">
-                <h3 class="font-bold text-lg text-gray-950 tracking-tight">${movie.title}</h3>
-                <div class="text-xs text-gray-700 font-medium">${movie.certification}</div>
-                <div class="text-xs text-gray-500">${movie.language}</div>
+            <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+              <div class="space-y-1 lg:max-w-xs flex-shrink-0">
+                <div class="flex items-center space-x-2">
+                  <h3 class="font-extrabold text-lg text-gray-950 tracking-tight leading-snug">${movie.title}</h3>
+                </div>
+                <div class="inline-block text-[11px] font-bold text-gray-700 bg-gray-100 px-2 py-0.5 rounded border border-gray-200">
+                  ${movie.certification}
+                </div>
+                <div class="text-xs text-gray-500 font-medium">
+                  ${movie.language}
+                </div>
+                <div class="text-[11px] text-gray-400">
+                  ${movie.genre || 'Action/Drama'} &nbsp;•&nbsp; ${movie.duration || '2h 20m'}
+                </div>
               </div>
-              <div class="flex flex-wrap gap-2.5 items-center">
+
+              <!-- Showtimes list with flexible wrapping -->
+              <div class="flex flex-wrap gap-2.5 items-center flex-1 lg:justify-start">
                 ${showPills}
               </div>
             </div>
