@@ -37,39 +37,45 @@ INSERT INTO seats (screen_id, row_label, seat_number, seat_tier) VALUES
 (2, 'B', 1, 'RECLINER'), (2, 'B', 2, 'RECLINER'), (2, 'B', 3, 'RECLINER'), (2, 'B', 4, 'RECLINER'), (2, 'B', 5, 'RECLINER');
 
 -- 5. Movies
+-- 5. Movies (From BookMyShow Reference Screenshot)
 INSERT INTO movies (id, title, description, duration_mins, release_date, language, genre, certification) VALUES
-(1, 'Dune: Part Two', 'Paul Atreides unites with Chani and the Fremen while seeking revenge.', 166, '2024-03-01', 'English', 'Sci-Fi/Adventure', 'UA'),
-(2, 'Kalki 2898 AD', 'A modern avatar of Vishnu descends to protect the world from evil forces.', 181, '2024-06-27', 'Telugu', 'Action/Sci-Fi', 'UA'),
-(3, 'Oppenheimer', 'The story of American scientist J. Robert Oppenheimer and his role in the Manhattan Project.', 180, '2023-07-21', 'English', 'Biography/Drama', 'A');
+(1, 'The Odyssey', 'An epic mythological adventure across ancient uncharted realms.', 160, '2026-09-15', 'English, Hindi, Tamil, Telugu', 'Action/Adventure', 'A'),
+(2, 'Hanuman Ansh', 'The sacred story of devotion, strength and divine protection.', 145, '2026-09-20', 'Hindi', 'Mythological/Drama', 'U'),
+(3, 'Mirzapur: The Movie', 'The battle for the throne of Purvanchal reaches the silver screen.', 155, '2026-09-25', 'Hindi, Telugu', 'Action/Crime/Thriller', 'A'),
+(4, 'Daayra', 'A gripping mystery unraveling the boundaries of justice and truth.', 138, '2026-09-28', 'Hindi, Malayalam', 'Mystery/Thriller', 'A'),
+(5, 'Toxic: A Fairy Tale for Grown-ups', 'A dark underworld saga tracing the rise of an antihero.', 170, '2026-10-01', 'Kannada, Telugu, Tamil, Malayalam', 'Action/Crime/Drama', 'A');
 
 -- 6. Shows (Spanning next 7 days for Theatre 1: 2026-10-01 to 2026-10-07)
 INSERT INTO shows (id, theatre_id, screen_id, movie_id, start_time, end_time) VALUES
--- Day 1: 2026-10-01 (Multiple shows on Audi 1 and Audi 2)
-(1, 1, 1, 1, '2026-10-01 09:30:00', '2026-10-01 12:16:00'), -- Audi 1: Dune (Morning)
-(2, 1, 1, 1, '2026-10-01 13:30:00', '2026-10-01 16:16:00'), -- Audi 1: Dune (Matinee)
-(3, 1, 1, 2, '2026-10-01 18:00:00', '2026-10-01 21:01:00'), -- Audi 1: Kalki (Evening)
-(4, 1, 1, 3, '2026-10-01 22:00:00', '2026-10-02 01:00:00'), -- Audi 1: Oppenheimer (Night)
-(5, 1, 2, 2, '2026-10-01 10:00:00', '2026-10-01 13:01:00'), -- Audi 2: Kalki
-(6, 1, 2, 1, '2026-10-01 15:00:00', '2026-10-01 17:46:00'), -- Audi 2: Dune
+-- Day 1: 2026-10-01 (Shows across Audi 1 and Audi 2)
+(1, 1, 1, 1, '2026-10-01 09:30:00', '2026-10-01 12:10:00'), -- Audi 1: The Odyssey (Morning)
+(2, 1, 1, 3, '2026-10-01 13:00:00', '2026-10-01 15:35:00'), -- Audi 1: Mirzapur (Matinee)
+(3, 1, 1, 5, '2026-10-01 17:00:00', '2026-10-01 19:50:00'), -- Audi 1: Toxic (Evening)
+(4, 1, 1, 1, '2026-10-01 21:00:00', '2026-10-01 23:40:00'), -- Audi 1: The Odyssey (Night)
+(5, 1, 2, 2, '2026-10-01 10:15:00', '2026-10-01 12:40:00'), -- Audi 2: Hanuman Ansh
+(6, 1, 2, 4, '2026-10-01 14:00:00', '2026-10-01 16:18:00'), -- Audi 2: Daayra
+(7, 1, 2, 5, '2026-10-01 18:30:00', '2026-10-01 21:20:00'), -- Audi 2: Toxic
 
 -- Day 2: 2026-10-02
-(7, 1, 1, 1, '2026-10-02 10:00:00', '2026-10-02 12:46:00'),
-(8, 1, 1, 2, '2026-10-02 14:00:00', '2026-10-02 17:01:00'),
+(8, 1, 1, 1, '2026-10-02 10:00:00', '2026-10-02 12:40:00'),
+(9, 1, 1, 5, '2026-10-02 14:00:00', '2026-10-02 16:50:00'),
+(10, 1, 2, 3, '2026-10-02 18:00:00', '2026-10-02 20:35:00'),
 
 -- Day 3: 2026-10-03
-(9, 1, 1, 1, '2026-10-03 11:00:00', '2026-10-03 13:46:00'),
+(11, 1, 1, 2, '2026-10-03 11:00:00', '2026-10-03 13:25:00'),
+(12, 1, 1, 5, '2026-10-03 15:00:00', '2026-10-03 17:50:00'),
 
 -- Day 4: 2026-10-04
-(10, 1, 1, 3, '2026-10-04 18:30:00', '2026-10-04 21:30:00'),
+(13, 1, 1, 3, '2026-10-04 18:30:00', '2026-10-04 21:05:00'),
 
 -- Day 5: 2026-10-05
-(11, 1, 1, 1, '2026-10-05 20:00:00', '2026-10-05 22:46:00'),
+(14, 1, 1, 1, '2026-10-05 20:00:00', '2026-10-05 22:40:00'),
 
 -- Day 6: 2026-10-06
-(12, 1, 1, 2, '2026-10-06 16:00:00', '2026-10-06 19:01:00'),
+(15, 1, 1, 4, '2026-10-06 16:00:00', '2026-10-06 18:18:00'),
 
 -- Day 7: 2026-10-07
-(13, 1, 1, 1, '2026-10-07 19:00:00', '2026-10-07 21:46:00');
+(16, 1, 1, 5, '2026-10-07 19:00:00', '2026-10-07 21:50:00');
 
 -- 7. Show Tier Pricing (For Show 1)
 INSERT INTO show_tier_pricing (show_id, seat_tier, price) VALUES
