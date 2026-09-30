@@ -1011,6 +1011,15 @@
 
         <!-- Right Side Nav -->
         <div class="nav-actions">
+          <div class="flex items-center" style="display: flex; align-items: center; gap: 8px;">
+            <label style="font-size: 11px; color: #94a3b8; font-weight: 500;">User:</label>
+            <select id="userSelector" onchange="switchUser(this.value)" 
+              style="background: rgba(255,255,255,0.08); color: #f1f5f9; border: 1px solid rgba(255,255,255,0.15); border-radius: var(--radius-sm); font-size: 12px; padding: 4px 8px; outline: none; font-weight: 600; cursor: pointer;">
+              <option value="1" style="background: #141821; color: #fff;">User 1 (Alice)</option>
+              <option value="2" style="background: #141821; color: #fff;">User 2 (Bob)</option>
+              <option value="3" style="background: #141821; color: #fff;">User 3 (Charlie)</option>
+            </select>
+          </div>
           <button class="location-btn" title="Select city">
             <i class="fa-solid fa-location-dot" style="font-size: 12px; color: #94a3b8;"></i>
             <span>Bengaluru</span>
@@ -1200,6 +1209,7 @@
   <!-- Application Logic & API Integration -->
   <script>
     const THEATRE_ID = 1;
+    let currentUserId = Number(localStorage.getItem('cinema_user_id')) || 1;
     let selectedDate = '2026-10-01';
     let currentShowId = null;
     let selectedSeats = new Map();
@@ -1209,6 +1219,21 @@
     let allMoviesData = [];
     let currentLangFilter = 'ALL';
     let currentFormatFilter = 'ALL';
+
+    function switchUser(val) {
+      currentUserId = Number(val);
+      localStorage.setItem('cinema_user_id', val);
+      currentHold = null;
+      selectedSeats.clear();
+      updateSelectedSeatsUI();
+      if (countdownInterval) clearInterval(countdownInterval);
+      document.getElementById('activeHoldBanner').classList.add('hidden');
+      if (currentShowId && !document.getElementById('seatModal').classList.contains('hidden')) {
+        fetch(`/api/v1/shows/${currentShowId}/seats`)
+          .then(r => r.json())
+          .then(d => renderSeatGrid(d.seats || []));
+      }
+    }
 
     // 1. Load Dates Strip
     async function loadDates() {
@@ -1531,7 +1556,7 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             seatIds: seatIds,
-            userId: 1,
+            userId: currentUserId,
             ttlSeconds: 600
           })
         });
@@ -1625,7 +1650,7 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             bookingId: holdToRelease.bookingId,
-            userId: 1
+            userId: currentUserId
           })
         });
 
@@ -1642,6 +1667,10 @@
     }
 
     // Initialize
+    const userSelectEl = document.getElementById('userSelector');
+    if (userSelectEl) {
+      userSelectEl.value = currentUserId.toString();
+    }
     loadDates();
   </script>
 </body>
