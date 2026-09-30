@@ -3,240 +3,175 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Movie Tickets & Showtimes - Modern Cinema Booking</title>
-  <!-- Tailwind CSS -->
+  <title>Movie Tickets, Plays, Sports, Events & Cinemas - BookMyShow</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Google Fonts: Inter & Plus Jakarta Sans -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: {
-            sans: ['"Plus Jakarta Sans"', 'Inter', 'sans-serif'],
-          },
-          colors: {
-            brand: {
-              50: '#ecfdf5',
-              100: '#d1fae5',
-              500: '#10b981',
-              600: '#059669',
-              700: '#047857',
-              800: '#065f46',
-            },
-            slate: {
-              850: '#172033',
-              900: '#0f172a',
-              950: '#020617',
-            }
-          }
-        }
-      }
-    }
-  </script>
   <style>
-    body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: #f2f2f2; }
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-    
-    /* Elegant Curved Cinema Screen */
-    .cinema-screen-arch {
-      position: relative;
-      height: 20px;
-      border-top: 3px solid #10b981;
-      border-radius: 50% 50% 0 0 / 16px 16px 0 0;
-      box-shadow: 0 -8px 16px -3px rgba(16, 185, 129, 0.25);
-    }
-    .cinema-screen-arch::after {
-      content: 'SCREEN THIS WAY';
-      position: absolute;
-      top: 5px;
-      left: 50%;
-      transform: translateX(-50%);
-      font-size: 9px;
-      letter-spacing: 2.5px;
-      text-transform: uppercase;
-      color: #64748b;
-      font-weight: 600;
+    .screen-line {
+      border-top: 3px solid #1ea5fc;
+      border-radius: 50% 50% 0 0 / 14px 14px 0 0;
+      box-shadow: 0 -6px 12px -2px rgba(30, 165, 252, 0.25);
     }
   </style>
 </head>
-<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col antialiased selection:bg-brand-500 selection:text-white">
+<body class="text-gray-900 min-h-screen flex flex-col">
 
-  <!-- TOP MODERN SLATE NAVBAR -->
-  <header class="bg-slate-900 text-white sticky top-0 z-50 border-b border-slate-800 shadow-sm">
-    <div class="max-w-7xl mx-auto px-4 lg:px-8 py-3.5 flex items-center justify-between">
-      <!-- Logo & Search -->
+  <!-- BOOKMYSHOW PRIMARY NAVBAR -->
+  <header class="bg-[#333545] text-white sticky top-0 z-50">
+    <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
       <div class="flex items-center space-x-8 flex-1">
-        <a href="/" class="flex items-center space-x-2 text-xl font-extrabold tracking-tight text-white group">
-          <div class="w-8 h-8 rounded-lg bg-brand-600 flex items-center justify-center text-white text-sm shadow-sm group-hover:bg-brand-500 transition">
-            <i class="fa-solid fa-ticket"></i>
-          </div>
-          <span class="tracking-tight">Cine<span class="text-brand-500">Pulse</span></span>
+        <a href="/" class="text-2xl font-black italic tracking-tighter text-white">
+          book<span class="text-[#f84464]">my</span>show
         </a>
-        <div class="hidden md:flex items-center bg-slate-800/80 border border-slate-700/80 text-slate-200 rounded-lg px-3.5 py-1.5 w-full max-w-md text-xs shadow-inner focus-within:border-brand-500 transition">
-          <i class="fa-solid fa-magnifying-glass text-slate-400 mr-2.5"></i>
-          <input type="text" placeholder="Search movies, theatres, experiences..." class="w-full text-xs outline-none bg-transparent placeholder-slate-400">
+        <div class="hidden md:flex items-center bg-white text-gray-700 rounded px-3 py-1.5 w-96 text-xs shadow-inner">
+          <i class="fa-solid fa-magnifying-glass text-gray-400 mr-2"></i>
+          <input type="text" placeholder="Search for Movies, Events, Plays, Sports..." class="w-full outline-none bg-transparent placeholder-gray-400">
         </div>
       </div>
-
-      <!-- Location & Action -->
-      <div class="flex items-center space-x-5 text-xs font-medium">
-        <div class="flex items-center space-x-1.5 cursor-pointer text-slate-300 hover:text-white transition">
-          <i class="fa-solid fa-location-dot text-brand-500 text-xs"></i>
-          <span class="text-[13px] font-semibold">Bengaluru</span>
-          <i class="fa-solid fa-chevron-down text-[9px] text-slate-400"></i>
+      <div class="flex items-center space-x-6 text-xs">
+        <div class="flex items-center space-x-1 cursor-pointer hover:text-gray-200">
+          <span class="font-medium">Bengaluru</span>
+          <i class="fa-solid fa-chevron-down text-[9px] text-gray-400"></i>
         </div>
-        <button class="bg-brand-600 hover:bg-brand-500 text-white px-4 py-2 rounded-lg text-xs font-bold tracking-wide transition shadow-sm">
+        <button class="bg-[#f84464] hover:bg-[#e03251] text-white px-4 py-1.5 rounded text-xs font-semibold transition">
           Sign In
         </button>
       </div>
     </div>
 
     <!-- SUB-NAVBAR -->
-    <div class="bg-slate-850 text-slate-300 border-t border-slate-800 text-[12px]">
-      <div class="max-w-7xl mx-auto px-4 lg:px-8 py-2 flex items-center justify-between">
+    <div class="bg-[#1f2533] text-gray-300 text-[12px] border-t border-gray-700/50">
+      <div class="max-w-6xl mx-auto px-4 py-2 flex items-center justify-between">
         <div class="flex items-center space-x-6">
-          <a href="#" class="text-white hover:text-brand-500 font-semibold transition">Movies</a>
-          <a href="#" class="hover:text-white transition">Cinemas</a>
+          <a href="#" class="text-white hover:text-[#f84464] font-medium">Movies</a>
+          <a href="#" class="hover:text-white transition">Stream</a>
           <a href="#" class="hover:text-white transition">Events</a>
-          <a href="#" class="hover:text-white transition">Offers</a>
+          <a href="#" class="hover:text-white transition">Plays</a>
+          <a href="#" class="hover:text-white transition">Sports</a>
+          <a href="#" class="hover:text-white transition">Activities</a>
         </div>
-        <div class="hidden lg:flex items-center space-x-5 text-[11px] text-slate-400 font-medium">
-          <span>Bengaluru City Center</span>
+        <div class="hidden lg:flex items-center space-x-6 text-[11px] text-gray-400">
+          <a href="#" class="hover:text-white transition">ListYourShow</a>
+          <a href="#" class="hover:text-white transition">Offers</a>
+          <a href="#" class="hover:text-white transition">Gift Cards</a>
         </div>
       </div>
     </div>
   </header>
 
-  <!-- THEATRE HEADER -->
-  <section class="bg-white border-b border-slate-200/80 py-5">
-    <div class="max-w-7xl mx-auto px-4 lg:px-8">
-      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+  <!-- THEATRE BANNER -->
+  <section class="bg-white border-b border-gray-200 py-4">
+    <div class="max-w-6xl mx-auto px-4">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-3">
         <div>
-          <div class="flex items-center space-x-3">
-            <h1 id="theatreName" class="text-2xl font-black text-slate-900 tracking-tight">PVR INOX: Forum Mall, Koramangala</h1>
-            <span class="bg-brand-50 text-brand-700 border border-brand-200/80 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">Multiplex</span>
-          </div>
-          <p class="text-xs text-slate-500 mt-1 flex items-center space-x-2">
-            <span>Hosur Road, Chikku Lakshmaiah Layout, Koramangala, Bengaluru</span>
+          <h1 id="theatreName" class="text-xl font-bold text-gray-900">PVR INOX: Forum Mall, Koramangala</h1>
+          <p class="text-xs text-gray-500 mt-1">
+            Hosur Road, Koramangala, Bengaluru &nbsp;|&nbsp; Food & Beverage &nbsp;|&nbsp; M-Ticket Available
           </p>
-          <div class="flex items-center space-x-4 mt-2.5 text-xs text-slate-600">
-            <span class="flex items-center text-brand-700 font-semibold"><i class="fa-solid fa-utensils text-brand-600 mr-1.5 text-[11px]"></i>Food & Beverage</span>
-            <span class="flex items-center text-sky-700 font-semibold"><i class="fa-solid fa-mobile-screen text-sky-600 mr-1.5 text-[11px]"></i>Digital M-Ticket</span>
-            <span class="flex items-center text-slate-500"><i class="fa-solid fa-wheelchair text-slate-400 mr-1.5 text-[11px]"></i>Wheelchair Accessible</span>
-          </div>
         </div>
-
-        <!-- Legend Tags -->
-        <div class="flex items-center space-x-4 text-[11px] text-slate-600 font-semibold">
-          <span class="flex items-center"><span class="w-2.5 h-2.5 rounded-full bg-brand-600 mr-1.5 shadow-xs"></span>AVAILABLE</span>
-          <span class="flex items-center"><span class="w-2.5 h-2.5 rounded-full bg-amber-500 mr-1.5 shadow-xs"></span>FAST FILLING</span>
-          <span class="flex items-center"><span class="w-2.5 h-2.5 rounded-full bg-slate-400 mr-1.5 shadow-xs"></span>SOLD OUT</span>
+        <div class="flex items-center space-x-4 text-[11px] text-gray-500 font-medium">
+          <span class="flex items-center"><span class="w-2.5 h-2.5 rounded-full bg-[#4abd5d] mr-1.5"></span>AVAILABLE</span>
+          <span class="flex items-center"><span class="w-2.5 h-2.5 rounded-full bg-[#f84464] mr-1.5"></span>FAST FILLING</span>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- 7-DAY DATE SELECTOR BAR -->
-  <section class="bg-white border-b border-slate-200 sticky top-24 z-30 shadow-xs">
-    <div class="max-w-7xl mx-auto px-4 lg:px-8">
-      <div id="dateStrip" class="flex items-center space-x-3 py-3 overflow-x-auto no-scrollbar">
-        <!-- Rendered dynamically via JavaScript -->
+  <!-- 7-DAY DATE SLIDER (BOOKMYSHOW RED ACCENT) -->
+  <section class="bg-white border-b border-gray-200 sticky top-20 z-30 shadow-xs">
+    <div class="max-w-6xl mx-auto px-4">
+      <div id="dateStrip" class="flex items-center space-x-2 py-2.5 overflow-x-auto no-scrollbar">
+        <!-- Injected via JavaScript -->
       </div>
     </div>
   </section>
 
-  <!-- MOVIE SHOWTIMES LIST -->
-  <main class="max-w-7xl mx-auto px-4 lg:px-8 py-8 flex-1 w-full">
-    <div id="movieList" class="space-y-4">
-      <div class="text-center py-16 text-slate-400 text-sm">
-        <i class="fa-solid fa-circle-notch fa-spin mr-2 text-brand-600"></i> Loading live schedules...
-      </div>
+  <!-- MOVIE LISTINGS (MATCHING REFERENCE SCREENSHOT) -->
+  <main class="max-w-6xl mx-auto px-4 py-6 flex-1 w-full">
+    <div id="movieList" class="space-y-3">
+      <div class="text-center py-16 text-gray-400 text-sm">Loading shows...</div>
     </div>
   </main>
 
-  <!-- SEAT SELECTION MODAL -->
-  <div id="seatModal" class="fixed inset-0 bg-slate-950/75 backdrop-blur-xs z-50 flex items-center justify-center p-4 hidden">
-    <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full overflow-hidden flex flex-col max-h-[92vh] border border-slate-200">
-      
-      <!-- Modal Header -->
-      <div class="bg-slate-900 text-white px-6 py-4 flex items-center justify-between border-b border-slate-800">
+  <!-- SEAT BOOKING MODAL -->
+  <div id="seatModal" class="fixed inset-0 bg-black/70 backdrop-blur-xs z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-lg shadow-2xl max-w-xl w-full overflow-hidden flex flex-col max-h-[90vh]">
+      <!-- Header -->
+      <div class="bg-[#333545] text-white px-5 py-3.5 flex items-center justify-between">
         <div>
-          <h3 id="modalMovieTitle" class="font-bold text-lg text-white">Movie Title</h3>
-          <p id="modalShowDetails" class="text-xs text-slate-300 mt-0.5">Audi 1 • 09:30 AM</p>
+          <h3 id="modalMovieTitle" class="font-bold text-base">Movie Title</h3>
+          <p id="modalShowDetails" class="text-xs text-gray-300 mt-0.5">Audi 1 • 09:30 AM</p>
         </div>
-        <button onclick="closeModal()" class="text-slate-400 hover:text-white text-xl p-1 transition">
+        <button onclick="closeModal()" class="text-gray-400 hover:text-white text-lg">
           <i class="fa-solid fa-xmark"></i>
         </button>
       </div>
 
-      <!-- Seat Canvas -->
+      <!-- Seating Body -->
       <div class="p-6 overflow-y-auto flex-1 bg-white">
-        <!-- Screen Curve -->
-        <div class="text-center mb-8">
-          <div class="cinema-screen-arch w-3/4 mx-auto pt-2.5"></div>
+        <!-- Screen Line -->
+        <div class="text-center mb-6">
+          <div class="screen-line w-3/4 mx-auto pt-2 text-[10px] text-gray-400 tracking-widest font-semibold uppercase">
+            All eyes this way please
+          </div>
         </div>
 
-        <!-- Dynamic Seat Grid -->
-        <div id="seatGrid" class="space-y-3.5 max-w-md mx-auto">
-          <!-- Populated from live MySQL seat data -->
+        <div id="seatGrid" class="space-y-3 max-w-sm mx-auto">
+          <!-- Dynamically populated seats -->
         </div>
 
         <!-- Legend -->
-        <div class="flex items-center justify-center space-x-6 mt-8 pt-5 border-t border-slate-100 text-xs text-slate-600 font-semibold">
-          <div class="flex items-center space-x-2">
-            <div class="w-4 h-4 border border-brand-600 rounded bg-white"></div>
+        <div class="flex items-center justify-center space-x-5 mt-6 pt-4 border-t border-gray-100 text-xs text-gray-500 font-medium">
+          <div class="flex items-center space-x-1.5">
+            <div class="w-3.5 h-3.5 border border-[#4abd5d] rounded bg-white"></div>
             <span>Available</span>
           </div>
-          <div class="flex items-center space-x-2">
-            <div class="w-4 h-4 bg-brand-600 rounded"></div>
+          <div class="flex items-center space-x-1.5">
+            <div class="w-3.5 h-3.5 bg-[#4abd5d] rounded"></div>
             <span>Selected</span>
           </div>
-          <div class="flex items-center space-x-2">
-            <div class="w-4 h-4 bg-amber-500 rounded"></div>
-            <span>Held</span>
+          <div class="flex items-center space-x-1.5">
+            <div class="w-3.5 h-3.5 bg-orange-400 rounded"></div>
+            <span>Held (10m)</span>
           </div>
-          <div class="flex items-center space-x-2">
-            <div class="w-4 h-4 bg-slate-300 rounded"></div>
+          <div class="flex items-center space-x-1.5">
+            <div class="w-3.5 h-3.5 bg-gray-300 rounded"></div>
             <span>Sold</span>
           </div>
         </div>
       </div>
 
-      <!-- Modal Footer -->
-      <div class="bg-slate-50 border-t border-slate-200 px-6 py-4 flex items-center justify-between">
+      <!-- Footer Checkout -->
+      <div class="bg-gray-50 border-t border-gray-200 px-5 py-3.5 flex items-center justify-between">
         <div>
-          <div class="text-xs text-slate-500">Selected Seats: <span id="selectedSeatsText" class="font-bold text-slate-900">None</span></div>
-          <div class="text-base font-black text-slate-900">Total: ₹<span id="totalAmount">0</span></div>
+          <div class="text-xs text-gray-500">Seats: <span id="selectedSeatsText" class="font-bold text-gray-800">None</span></div>
+          <div class="text-sm font-bold text-gray-900">Total: ₹<span id="totalAmount">0</span></div>
         </div>
-        <button id="holdBtn" onclick="holdSelectedSeats()" class="bg-brand-600 hover:bg-brand-700 text-white px-6 py-2.5 rounded-xl text-sm font-bold tracking-wide transition shadow-sm disabled:opacity-50 disabled:cursor-not-allowed">
+        <button id="holdBtn" onclick="holdSelectedSeats()" class="bg-[#f84464] hover:bg-[#e03251] text-white px-5 py-2 rounded text-xs font-bold transition disabled:opacity-50 disabled:cursor-not-allowed">
           Hold Seats & Proceed
         </button>
       </div>
     </div>
   </div>
 
-  <!-- ACTIVE HOLD COUNTDOWN BAR -->
-  <div id="activeHoldBanner" class="fixed bottom-6 right-6 bg-slate-900 text-white px-5 py-4 rounded-2xl shadow-2xl border border-slate-800 z-50 hidden max-w-sm">
+  <!-- HOLD TIMER BAR -->
+  <div id="activeHoldBanner" class="fixed bottom-5 right-5 bg-[#333545] text-white px-5 py-3.5 rounded-lg shadow-xl border border-gray-700 z-50 hidden max-w-sm">
     <div class="flex items-center space-x-4">
-      <div class="bg-brand-600 text-white p-2.5 rounded-xl text-lg shadow-sm">
+      <div class="bg-[#f84464] text-white p-2 rounded text-base">
         <i class="fa-solid fa-stopwatch"></i>
       </div>
       <div class="flex-1">
-        <div class="text-xs text-slate-300">Lock Ref: <span id="holdRef" class="font-mono text-brand-400 font-bold">...</span></div>
-        <div class="text-xs font-semibold text-amber-400 mt-0.5">Expires in: <span id="timerCountdown" class="font-mono font-bold text-sm">10:00</span></div>
+        <div class="text-xs text-gray-300">Booking Ref: <span id="holdRef" class="font-mono text-yellow-400 font-bold">...</span></div>
+        <div class="text-xs font-semibold text-yellow-400 mt-0.5">Expires in: <span id="timerCountdown" class="font-mono font-bold text-sm">10:00</span></div>
       </div>
       <div class="flex items-center space-x-2">
-        <button onclick="simulatePayment()" class="bg-brand-600 hover:bg-brand-500 text-white text-xs font-bold px-3.5 py-2 rounded-lg transition shadow-sm">
-          Pay Now
+        <button onclick="simulatePayment()" class="bg-[#4abd5d] hover:bg-green-600 text-white text-xs font-bold px-3 py-1.5 rounded transition">
+          Pay
         </button>
-        <button onclick="cancelHold()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs px-2.5 py-2 rounded-lg transition">
+        <button onclick="cancelHold()" class="bg-gray-700 hover:bg-gray-600 text-gray-300 text-xs px-2.5 py-1.5 rounded transition">
           Release
         </button>
       </div>
@@ -244,21 +179,18 @@
   </div>
 
   <!-- FOOTER -->
-  <footer class="bg-slate-900 text-slate-400 text-xs py-8 mt-auto border-t border-slate-800">
-    <div class="max-w-7xl mx-auto px-4 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4">
-      <div class="flex items-center space-x-2 text-white text-lg font-black tracking-tight">
-        <div class="w-6 h-6 rounded bg-brand-600 flex items-center justify-center text-white text-xs">
-          <i class="fa-solid fa-ticket"></i>
-        </div>
-        <span>Cine<span class="text-brand-500">Pulse</span></span>
+  <footer class="bg-[#333545] text-gray-400 text-xs py-6 mt-auto border-t border-gray-700">
+    <div class="max-w-6xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-3">
+      <div class="text-white text-lg font-black italic tracking-tighter">
+        book<span class="text-[#f84464]">my</span>show
       </div>
-      <div class="text-slate-400 text-center md:text-right">
-        High-Concurrency Cinema Ticketing Engine • Powered by MySQL 8.4 & Redis
+      <div class="text-gray-400 text-center md:text-right">
+        Cinema Ticketing Engine • MySQL 8.4 & Redis Concurrency Architecture
       </div>
     </div>
   </footer>
 
-  <!-- CLIENT SCRIPT -->
+  <!-- SCRIPT -->
   <script>
     const THEATRE_ID = 1;
     let selectedDate = '2026-10-01';
@@ -267,7 +199,7 @@
     let currentHold = null;
     let countdownInterval = null;
 
-    // 1. Fetch 7-Day Date Slider
+    // 1. Load Dates
     async function loadDates() {
       try {
         const res = await fetch(`/api/v1/theatres/${THEATRE_ID}/dates`);
@@ -280,22 +212,22 @@
           if (idx === 0) selectedDate = d.show_date;
 
           const dateBtn = document.createElement('button');
-          dateBtn.className = `flex flex-col items-center justify-center px-4 py-2 rounded-xl transition min-w-[70px] ${
+          dateBtn.className = `flex flex-col items-center justify-center px-4 py-2 rounded transition min-w-[65px] ${
             isSelected 
-              ? 'bg-brand-600 text-white shadow-sm font-bold' 
-              : 'text-slate-700 hover:bg-slate-100 font-semibold'
+              ? 'bg-[#f84464] text-white font-bold shadow-sm' 
+              : 'text-gray-700 hover:bg-gray-100 font-medium'
           }`;
           dateBtn.innerHTML = `
-            <span class="text-[10px] uppercase tracking-wider font-semibold ${isSelected ? 'text-brand-100' : 'text-slate-400'}">${d.day_short}</span>
-            <span class="text-base font-black leading-tight">${d.day_month.split(' ')[0]}</span>
-            <span class="text-[10px] uppercase font-bold tracking-tight ${isSelected ? 'text-brand-100' : 'text-slate-400'}">${d.day_month.split(' ')[1]}</span>
+            <span class="text-[10px] uppercase font-bold tracking-tight ${isSelected ? 'text-white' : 'text-gray-500'}">${d.day_short}</span>
+            <span class="text-base font-extrabold leading-tight">${d.day_month.split(' ')[0]}</span>
+            <span class="text-[10px] uppercase font-bold ${isSelected ? 'text-white' : 'text-gray-500'}">${d.day_month.split(' ')[1]}</span>
           `;
           dateBtn.onclick = () => {
             selectedDate = d.show_date;
             document.querySelectorAll('#dateStrip button').forEach(b => {
-              b.className = 'flex flex-col items-center justify-center px-4 py-2 rounded-xl transition min-w-[70px] text-slate-700 hover:bg-slate-100 font-semibold';
+              b.className = 'flex flex-col items-center justify-center px-4 py-2 rounded transition min-w-[65px] text-gray-700 hover:bg-gray-100 font-medium';
             });
-            dateBtn.className = 'flex flex-col items-center justify-center px-4 py-2 rounded-xl transition min-w-[70px] bg-brand-600 text-white shadow-sm font-bold';
+            dateBtn.className = 'flex flex-col items-center justify-center px-4 py-2 rounded transition min-w-[65px] bg-[#f84464] text-white font-bold shadow-sm';
             loadShows();
           };
           dateStrip.appendChild(dateBtn);
@@ -307,10 +239,10 @@
       }
     }
 
-    // 2. Fetch Movies & Showtimes (P2 Query Endpoint)
+    // 2. Load Shows (P2 Query)
     async function loadShows() {
       const container = document.getElementById('movieList');
-      container.innerHTML = '<div class="text-center py-16 text-slate-400 text-sm"><i class="fa-solid fa-circle-notch fa-spin mr-2 text-brand-600"></i> Loading schedules...</div>';
+      container.innerHTML = '<div class="text-center py-12 text-gray-400 text-sm">Loading shows...</div>';
 
       try {
         const res = await fetch(`/api/v1/theatres/${THEATRE_ID}/shows?date=${selectedDate}`);
@@ -321,41 +253,33 @@
         }
 
         if (!data.movies || data.movies.length === 0) {
-          container.innerHTML = `<div class="bg-white rounded-2xl p-10 text-center text-slate-500 font-medium border border-slate-200">No shows scheduled for ${selectedDate}.</div>`;
+          container.innerHTML = `<div class="bg-white rounded p-8 text-center text-gray-500">No shows scheduled for ${selectedDate}.</div>`;
           return;
         }
 
         container.innerHTML = '';
         data.movies.forEach(movie => {
           const card = document.createElement('div');
-          card.className = 'bg-white rounded-2xl border border-slate-200/90 p-6 shadow-sm hover:border-slate-300 transition duration-150';
+          card.className = 'bg-white rounded border border-gray-200 p-5';
 
+          // Showtime Buttons (Matching BookMyShow)
           const showPills = movie.shows.map(s => `
             <button onclick="openSeatModal(${s.showId}, '${movie.title}', '${s.screenNumber} • ${s.screenType}', '${s.showTime}')"
-              class="group min-w-[110px] border border-slate-200 hover:border-brand-600 bg-white hover:bg-brand-50 rounded-xl py-2 px-3 text-center transition flex flex-col items-center justify-center shadow-xs">
-              <span class="text-[13px] font-bold text-slate-900 group-hover:text-brand-700 tracking-tight leading-tight">${s.showTime}</span>
-              <span class="text-[10px] font-bold text-slate-400 group-hover:text-brand-600 uppercase tracking-widest mt-1">${s.screenType}</span>
+              class="group min-w-[100px] border border-gray-300 hover:border-[#4abd5d] bg-white rounded py-2 px-3 text-center transition flex flex-col items-center justify-center">
+              <span class="text-xs font-bold text-gray-800 group-hover:text-[#4abd5d] tracking-tight">${s.showTime}</span>
+              <span class="text-[9px] font-semibold text-gray-400 group-hover:text-[#4abd5d] uppercase tracking-wider mt-0.5">${s.screenType}</span>
             </button>
           `).join('');
 
+          // Exact Layout Matching Attached Screenshots
           card.innerHTML = `
-            <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-              <!-- Left Movie Details -->
-              <div class="lg:w-80 flex-shrink-0 space-y-1">
-                <div class="flex items-center space-x-2">
-                  <h3 class="font-extrabold text-lg text-slate-900 tracking-tight">${movie.title}</h3>
-                </div>
-                <div class="flex items-center space-x-2 text-xs">
-                  <span class="inline-block text-[11px] font-bold text-slate-700 bg-slate-100 px-2 py-0.5 rounded border border-slate-200 uppercase">${movie.certification}</span>
-                  <span class="text-slate-500 font-medium truncate">${movie.language}</span>
-                </div>
-                <p class="text-[11px] text-slate-400 pt-1 font-medium">
-                  ${movie.genre || 'Action/Drama'} &nbsp;•&nbsp; ${movie.duration || '2h 20m'}
-                </p>
+            <div class="flex flex-col md:flex-row md:items-start justify-between gap-6">
+              <div class="space-y-0.5 md:w-72 flex-shrink-0">
+                <h3 class="font-bold text-base text-gray-900 leading-snug">${movie.title}</h3>
+                <div class="text-xs text-gray-600 font-normal">${movie.certification}</div>
+                <div class="text-xs text-gray-500 font-normal">${movie.language}</div>
               </div>
-
-              <!-- Right Showtimes Grid -->
-              <div class="flex flex-wrap gap-2.5 items-center flex-1 lg:justify-start">
+              <div class="flex flex-wrap gap-2.5 items-center flex-1">
                 ${showPills}
               </div>
             </div>
@@ -363,11 +287,11 @@
           container.appendChild(card);
         });
       } catch (err) {
-        container.innerHTML = `<div class="bg-red-50 text-red-600 rounded-xl p-6 text-center font-medium">Failed to load shows: ${err.message}</div>`;
+        container.innerHTML = `<div class="bg-red-50 text-red-600 rounded p-6 text-center text-xs">Failed to load shows: ${err.message}</div>`;
       }
     }
 
-    // 3. Open Live Seat Modal
+    // 3. Open Seat Modal
     async function openSeatModal(showId, title, screen, time) {
       currentShowId = showId;
       selectedSeats.clear();
@@ -377,7 +301,7 @@
       document.getElementById('modalShowDetails').innerText = `${screen} • ${time}`;
 
       const grid = document.getElementById('seatGrid');
-      grid.innerHTML = '<div class="text-center py-10 text-slate-400 text-xs"><i class="fa-solid fa-circle-notch fa-spin mr-2 text-brand-600"></i> Fetching real-time seat inventory...</div>';
+      grid.innerHTML = '<div class="text-center py-8 text-gray-400 text-xs">Loading seats...</div>';
       document.getElementById('seatModal').classList.remove('hidden');
 
       try {
@@ -399,7 +323,7 @@
       grid.innerHTML = '';
 
       if (!seatsList || seatsList.length === 0) {
-        grid.innerHTML = '<div class="text-center text-slate-400 py-6 text-xs">No seating layout configured for this screen.</div>';
+        grid.innerHTML = '<div class="text-center text-gray-400 py-4 text-xs">No seating layout configured for this screen.</div>';
         return;
       }
 
@@ -413,19 +337,18 @@
 
       sortedRowLabels.forEach(rowLabel => {
         const rowSeats = rowMap.get(rowLabel).sort((a, b) => a.seat_number - b.seat_number);
-        const tier = rowSeats[0]?.seat_tier || 'CLASSIC';
         const price = rowSeats[0]?.price || 250;
 
         const rowDiv = document.createElement('div');
-        rowDiv.className = 'flex items-center space-x-3';
+        rowDiv.className = 'flex items-center space-x-2';
 
         const label = document.createElement('div');
-        label.className = 'w-6 text-xs font-bold text-slate-400 text-center';
+        label.className = 'w-5 text-xs font-bold text-gray-400 text-center';
         label.innerText = rowLabel;
         rowDiv.appendChild(label);
 
         const seatsDiv = document.createElement('div');
-        seatsDiv.className = 'flex-1 flex justify-center space-x-2.5';
+        seatsDiv.className = 'flex-1 flex justify-center space-x-2';
 
         rowSeats.forEach(s => {
           const seat = document.createElement('button');
@@ -433,27 +356,24 @@
           const isHeld = s.effective_status === 'HELD';
 
           if (isSold) {
-            seat.className = 'w-8 h-8 rounded-lg text-xs font-bold flex items-center justify-center bg-slate-200 text-slate-400 cursor-not-allowed';
-            seat.title = `Seat ${s.row_label}${s.seat_number} - SOLD OUT`;
+            seat.className = 'w-7 h-7 rounded text-[11px] font-medium flex items-center justify-center bg-gray-300 text-gray-500 cursor-not-allowed';
             seat.disabled = true;
           } else if (isHeld) {
-            seat.className = 'w-8 h-8 rounded-lg text-xs font-bold flex items-center justify-center bg-amber-500 text-white cursor-not-allowed shadow-xs';
-            seat.title = `Seat ${s.row_label}${s.seat_number} - HELD (10m Timer)`;
+            seat.className = 'w-7 h-7 rounded text-[11px] font-medium flex items-center justify-center bg-orange-400 text-white cursor-not-allowed';
             seat.disabled = true;
           } else {
-            seat.className = 'w-8 h-8 rounded-lg text-xs font-bold flex items-center justify-center transition border border-brand-600 text-brand-700 hover:bg-brand-50 shadow-xs';
-            seat.title = `Seat ${s.row_label}${s.seat_number} - ₹${price} (${tier})`;
+            seat.className = 'w-7 h-7 rounded text-[11px] font-medium flex items-center justify-center transition border border-[#4abd5d] text-[#4abd5d] hover:bg-green-50';
             seat.onclick = () => {
               if (selectedSeats.has(s.seat_id)) {
                 selectedSeats.delete(s.seat_id);
-                seat.className = 'w-8 h-8 rounded-lg text-xs font-bold flex items-center justify-center transition border border-brand-600 text-brand-700 hover:bg-brand-50 shadow-xs';
+                seat.className = 'w-7 h-7 rounded text-[11px] font-medium flex items-center justify-center transition border border-[#4abd5d] text-[#4abd5d] hover:bg-green-50';
               } else {
                 if (selectedSeats.size >= 6) {
                   alert('Maximum 6 seats allowed per booking.');
                   return;
                 }
                 selectedSeats.add(s.seat_id);
-                seat.className = 'w-8 h-8 rounded-lg text-xs font-bold flex items-center justify-center transition bg-brand-600 text-white shadow-sm';
+                seat.className = 'w-7 h-7 rounded text-[11px] font-medium flex items-center justify-center transition bg-[#4abd5d] text-white';
               }
               updateSelectedSeatsUI();
             };
@@ -490,7 +410,7 @@
 
       const holdBtn = document.getElementById('holdBtn');
       holdBtn.disabled = true;
-      holdBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin mr-1"></i> Holding...';
+      holdBtn.innerText = 'Holding...';
 
       try {
         const res = await fetch(`/api/v1/shows/${currentShowId}/hold-seats`, {
@@ -515,7 +435,7 @@
         alert(`Error: ${err.message}`);
       } finally {
         holdBtn.disabled = false;
-        holdBtn.innerHTML = 'Hold Seats & Proceed';
+        holdBtn.innerText = 'Hold Seats & Proceed';
       }
     }
 
